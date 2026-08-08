@@ -6,12 +6,12 @@
 // ומסונכרן אוטומטית בין טאבים פתוחים באותו דפדפן/מכשיר) - נוח לבדיקה לפני חיבור Firebase.
 
 const FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
+  apiKey: "AIzaSyDTLvP3ltKMo_xC2YJXILIjG5oJWDvFEgw",
+  authDomain: "ohad-sicily-trip.firebaseapp.com",
+  projectId: "ohad-sicily-trip",
+  storageBucket: "ohad-sicily-trip.firebasestorage.app",
+  messagingSenderId: "446138374726",
+  appId: "1:446138374726:web:ea9dbd3c3333e813018847",
 };
 
 const FIREBASE_ENABLED = !!(FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey);
