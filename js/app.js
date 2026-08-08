@@ -97,6 +97,13 @@ function debouncedSaveNote(placeId, text) {
   clearTimeout(_noteDebounceTimers[placeId]);
   _noteDebounceTimers[placeId] = setTimeout(() => SyncService.setPlaceNote(placeId, text), 600);
 }
+function flushSaveNote(placeId, text) {
+  clearTimeout(_noteDebounceTimers[placeId]);
+  SyncService.setPlaceNote(placeId, text);
+}
+
+const PENCIL_ICON = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
+const _notesEditingIds = new Set();
 
 function renderFoodPlaces() {
   const el = document.getElementById('placesList');
@@ -127,13 +134,42 @@ function renderFoodPlaces() {
         <a class="place-address-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(place.name, place.area)}">📍 ${place.address} <span class="ext-icon">↗</span></a>
         ${place.tip ? `<div class="place-tip">${place.tip}</div>` : ''}
         ${isClosed ? `<div class="place-closed-flag">סגור ב${day.weekday} (${day.date.split('-').reverse().slice(0,2).join('.')})</div>` : ''}
-        <textarea class="place-note" data-place="${place.id}" placeholder="הוסיפו הערה משותפת...">${escapeHtml(note)}</textarea>
+        ${renderPlaceNoteBlock(place.id, note)}
       </div>`;
   });
   el.innerHTML = html;
-  el.querySelectorAll('.place-note').forEach(ta => {
-    ta.addEventListener('input', () => debouncedSaveNote(ta.dataset.place, ta.value));
+
+  el.querySelectorAll('.place-note-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _notesEditingIds.add(btn.dataset.place);
+      renderFoodPlaces();
+      const ta = el.querySelector(`.place-note-textarea[data-place="${btn.dataset.place}"]`);
+      if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+    });
   });
+  el.querySelectorAll('.place-note-textarea').forEach(ta => {
+    ta.addEventListener('input', () => debouncedSaveNote(ta.dataset.place, ta.value));
+    ta.addEventListener('blur', () => {
+      flushSaveNote(ta.dataset.place, ta.value);
+      _notesEditingIds.delete(ta.dataset.place);
+      renderFoodPlaces();
+    });
+  });
+}
+
+function renderPlaceNoteBlock(placeId, note) {
+  const isEditing = _notesEditingIds.has(placeId);
+  if (isEditing) {
+    return `<textarea class="place-note-textarea" data-place="${placeId}" placeholder="הוסיפו הערה משותפת...">${escapeHtml(note)}</textarea>`;
+  }
+  if (note.trim()) {
+    return `
+      <div class="place-note-display">
+        <span class="place-note-text">${escapeHtml(note)}</span>
+        <button type="button" class="place-note-edit-btn" data-place="${placeId}" title="ערוך הערה">${PENCIL_ICON}</button>
+      </div>`;
+  }
+  return `<button type="button" class="place-note-add-btn place-note-edit-btn" data-place="${placeId}">${PENCIL_ICON} הוסיפו הערה משותפת</button>`;
 }
 
 function renderFoodDishes() {
@@ -232,9 +268,9 @@ function renderPacking() {
         <div class="packing-item ${hidden ? 'is-hidden' : ''}">
           <div class="packing-name">${itemName}</div>
           <div class="packing-checks">
+            <button type="button" class="packing-hide-btn" data-hide-key="${key}" title="${hidden ? 'סמן כרלוונטי' : 'סמן כלא רלוונטי'}">${hidden ? EYE_ICON : EYE_OFF_ICON}</button>
             <label class="packing-check-wrap">עידן<input type="checkbox" data-key="${key}" data-person="idan" ${state.idan ? 'checked' : ''} ${hidden ? 'disabled' : ''}></label>
             <label class="packing-check-wrap">אוהד<input type="checkbox" data-key="${key}" data-person="ohad" ${state.ohad ? 'checked' : ''} ${hidden ? 'disabled' : ''}></label>
-            <button type="button" class="packing-hide-btn" data-hide-key="${key}" title="${hidden ? 'סמן כרלוונטי' : 'סמן כלא רלוונטי'}">${hidden ? EYE_OFF_ICON : EYE_ICON}</button>
           </div>
         </div>`;
     });
@@ -263,7 +299,7 @@ function init() {
   SyncService.subscribe(() => {
     if (AppState.currentPage === 'food') {
       renderFoodDishes();
-      const editingNote = document.activeElement && document.activeElement.classList.contains('place-note');
+      const editingNote = document.activeElement && document.activeElement.classList.contains('place-note-textarea');
       if (!editingNote) renderFoodPlaces();
     }
     if (AppState.currentPage === 'packing') renderPacking();

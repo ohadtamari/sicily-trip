@@ -22,6 +22,16 @@ const SyncService = {
     this._subscribers.forEach(cb => cb(this.state));
   },
 
+  // ממזג state שנטען (מ-localStorage/Firestore) עם ברירת מחדל, כדי לא לקרוס
+  // כשנוסף שדה חדש (כמו placeNotes) אחרי שכבר היה state ישן שמור אצל המשתמש.
+  _withDefaults(loaded) {
+    return {
+      packing: (loaded && loaded.packing) || {},
+      foodDishes: (loaded && loaded.foodDishes) || {},
+      placeNotes: (loaded && loaded.placeNotes) || {},
+    };
+  },
+
   async setPacking(itemKey, person, value) {
     if (!this.state.packing[itemKey]) this.state.packing[itemKey] = {};
     this.state.packing[itemKey][person] = value;
@@ -29,11 +39,13 @@ const SyncService = {
   },
 
   async setDish(dishId, value) {
+    if (!this.state.foodDishes) this.state.foodDishes = {};
     this.state.foodDishes[dishId] = value;
     await this._persist('foodDishes', this.state.foodDishes);
   },
 
   async setPlaceNote(placeId, text) {
+    if (!this.state.placeNotes) this.state.placeNotes = {};
     this.state.placeNotes[placeId] = text;
     await this._persist('placeNotes', this.state.placeNotes);
   },
@@ -74,11 +86,11 @@ const SyncService = {
     this._mode = 'local';
     const raw = localStorage.getItem(LOCAL_KEY);
     if (raw) {
-      try { this.state = JSON.parse(raw); } catch (e) { /* ignore */ }
+      try { this.state = this._withDefaults(JSON.parse(raw)); } catch (e) { /* ignore */ }
     }
     window.addEventListener('storage', (e) => {
       if (e.key === LOCAL_KEY && e.newValue) {
-        try { this.state = JSON.parse(e.newValue); this._emit(); } catch (err) { /* ignore */ }
+        try { this.state = this._withDefaults(JSON.parse(e.newValue)); this._emit(); } catch (err) { /* ignore */ }
       }
     });
     this._emit();
@@ -100,8 +112,7 @@ const SyncService = {
       let resolved = false;
       onSnapshot(ref, (snap) => {
         if (snap.exists()) {
-          const data = snap.data();
-          this.state = { packing: data.packing || {}, foodDishes: data.foodDishes || {}, placeNotes: data.placeNotes || {} };
+          this.state = this._withDefaults(snap.data());
         } else {
           setDoc(ref, this.state).catch(() => {});
         }
