@@ -295,7 +295,7 @@ function init() {
   setupTabs();
   setupDayNav();
   renderDayContextBar();
-  showPage('map');
+  showPage('itinerary');
   SyncService.subscribe(() => {
     if (AppState.currentPage === 'food') {
       renderFoodDishes();
