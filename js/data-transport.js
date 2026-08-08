@@ -29,7 +29,7 @@ const GAS_STATIONS = [
     note: 'אין תחנת דלק בתוך השדה עצמו. למלא דלק מלא ~10 ק"מ לפני השדה (איזור וילגרציה די קריני / צ\'יניזי - ERG / Eni), ולשמור קבלה כהוכחה.',
   },
   {
-    dayNum: 5, name: 'חניון Rifugio Sapienza (אטנה)', area: 'צד דרומי של האטנה',
+    dayNum: 7, name: 'חניון Rifugio Sapienza (אטנה)', area: 'צד דרומי של האטנה',
     note: 'חניון בתשלום (~5 יורו לחצי יום), מזין מספר רישוי בעמדה. כדאי להגיע מוקדם בעונה עמוסה.',
   },
 ];
@@ -39,9 +39,10 @@ const DRIVES = [
   { fromDay: 3, from: 'אורטיג\'יה', to: 'נוטו', duration: '~35 דק\'' },
   { fromDay: 3, from: 'נוטו', to: 'קטניה', duration: '~1 שעה' },
   { fromDay: 4, from: 'קטניה', to: 'טאורמינה', duration: '~45 דק\'' },
-  { fromDay: 5, from: 'טאורמינה', to: 'Rifugio Sapienza (אטנה)', duration: '~40-50 דק\'' },
   { fromDay: 6, from: 'טאורמינה', to: 'נחל אלקנטרה', duration: '~30-40 דק\'' },
-  { fromDay: 8, from: 'טאורמינה', to: 'פלרמו (שדה תעופה)', duration: '~2.5-3 שעות' },
+  { fromDay: 6, from: 'נחל אלקנטרה', to: 'סנטה ונרינה (יקב)', duration: '~1-1.5 שעות' },
+  { fromDay: 7, from: 'סנטה ונרינה (יקב)', to: 'Rifugio Sapienza (אטנה)', duration: '~30-40 דק\'' },
+  { fromDay: 8, from: 'סנטה ונרינה (יקב)', to: 'פלרמו (שדה תעופה)', duration: '~2.5-3 שעות' },
   { fromDay: 8, from: 'שדה פלרמו', to: 'מרכז פלרמו', duration: '~40-60 דק\' (הסעה/רכבת/מונית)' },
   { fromDay: 10, from: 'פלרמו', to: 'מונריאלה', duration: '~30 דק\' (אוטובוס)' },
   { fromDay: 10, from: 'פלרמו', to: 'צ\'פאלו', duration: '~45-60 דק\' (רכבת אזורית)' },

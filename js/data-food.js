@@ -78,6 +78,12 @@ const FOOD_PLACES = [
     area: 'רובע קלסה', address: 'Kalsa, Palermo',
     tip: 'מוביל ע"י "קרלו הנקניקן" - חומרי גלם מעולים', closedDays: [],
   },
+  {
+    id: 'cantine-murgo', name: 'Cantine Murgo (Tenuta San Michele)', base: 'santavenerina', source: 'claude',
+    area: 'סנטה ונרינה, יקב על מדרונות האטנה', address: 'Via Zafferana 13, 95010 Santa Venerina',
+    tip: 'יקב אגריטוריזמו עם יינות מבעבעים (מבוססי נרלו) - טעימות וארוחות במקום הלינה',
+    closedDays: [],
+  },
 ];
 
 const FOOD_DISHES = [
