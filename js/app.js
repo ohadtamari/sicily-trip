@@ -1,0 +1,273 @@
+// בקר ראשי: ניתוב טאבים, פס הקשר-יום, ורינדור תוכן העמודים
+
+const ENGLISH_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'food', 'transport'];
+
+function sanitizeKey(s) { return s.replace(/[^\p{L}\p{N}]+/gu, '_'); }
+
+/* ===== ניווט טאבים ===== */
+function showPage(pageId) {
+  AppState.currentPage = pageId;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
+  document.getElementById('dayContextBar').style.display = PAGES_WITH_DAY_BAR.includes(pageId) ? 'flex' : 'none';
+
+  if (pageId === 'map') { initMap(); setTimeout(() => _leafletMap && _leafletMap.invalidateSize(), 50); }
+  if (pageId === 'itinerary') renderItinerary();
+  if (pageId === 'food') { renderFoodPlaces(); renderFoodDishes(); }
+  if (pageId === 'transport') renderTransport();
+  if (pageId === 'packing') renderPacking();
+  if (pageId === 'weather') initWeather();
+}
+
+function setupTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
+  });
+}
+
+/* ===== פס הקשר יום ===== */
+function renderDayContextBar() {
+  const day = getDayByNum(AppState.selectedDayNum);
+  document.getElementById('dayNumLabel').textContent = `יום ${day.num} מתוך ${TRIP_DAYS.length}`;
+  document.getElementById('dayDateLabel').textContent = `${formatDDMM(day.date)} · ${day.weekday}`;
+  document.getElementById('dayPrev').disabled = day.num <= 1;
+  document.getElementById('dayNext').disabled = day.num >= TRIP_DAYS.length;
+  document.getElementById('btnAll').classList.toggle('active', AppState.allSelected);
+  document.getElementById('dayContextBar').classList.toggle('all-mode', AppState.allSelected);
+}
+
+function setupDayNav() {
+  document.getElementById('dayPrev').addEventListener('click', () => {
+    AppState.allSelected = false;
+    AppState.selectedDayNum = Math.max(1, AppState.selectedDayNum - 1);
+    onDayContextUpdated();
+  });
+  document.getElementById('dayNext').addEventListener('click', () => {
+    AppState.allSelected = false;
+    AppState.selectedDayNum = Math.min(TRIP_DAYS.length, AppState.selectedDayNum + 1);
+    onDayContextUpdated();
+  });
+  document.getElementById('btnAll').addEventListener('click', () => {
+    AppState.allSelected = !AppState.allSelected;
+    onDayContextUpdated();
+  });
+}
+
+function onDayContextUpdated() {
+  renderDayContextBar();
+  notifyDayContextChange();
+  if (AppState.currentPage === 'itinerary') renderItinerary();
+  if (AppState.currentPage === 'food') renderFoodPlaces();
+  if (AppState.currentPage === 'transport') renderTransport();
+}
+
+/* ===== מסלול ===== */
+function renderItinItem(item, day) {
+  const badge = item.dayOffset ? `<span class="itin-badge">+${item.dayOffset}</span>` : '';
+  return `
+    <div class="card itin-item">
+      <div class="itin-icon">${item.icon || '📍'}</div>
+      <div style="flex:1">
+        <div><span class="itin-time">${item.time}${badge}</span> <span class="itin-title">${item.title}</span></div>
+        ${item.desc ? `<div class="itin-desc">${item.desc}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderItinerary() {
+  const el = document.getElementById('itineraryList');
+  let html = '';
+  const days = AppState.allSelected ? TRIP_DAYS : [getDayByNum(AppState.selectedDayNum)];
+  days.forEach(day => {
+    if (AppState.allSelected) html += `<div class="card-day-heading">יום ${day.num} · ${formatDDMM(day.date)} · ${day.weekday} - ${day.title}</div>`;
+    day.items.forEach(item => { html += renderItinItem(item, day); });
+    if (day.note) html += `<div class="itin-note">💡 ${day.note}</div>`;
+  });
+  el.innerHTML = html;
+}
+
+/* ===== אוכל ===== */
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+const _noteDebounceTimers = {};
+function debouncedSaveNote(placeId, text) {
+  clearTimeout(_noteDebounceTimers[placeId]);
+  _noteDebounceTimers[placeId] = setTimeout(() => SyncService.setPlaceNote(placeId, text), 600);
+}
+
+function renderFoodPlaces() {
+  const el = document.getElementById('placesList');
+  const day = AppState.allSelected ? null : getDayByNum(AppState.selectedDayNum);
+  const weekdayEn = day ? ENGLISH_WEEKDAYS[new Date(day.date + 'T12:00:00').getDay()] : null;
+  const relevantBases = day ? getRelevantBasesForDay(day) : null;
+
+  const places = relevantBases ? FOOD_PLACES.filter(p => relevantBases.has(p.base)) : FOOD_PLACES;
+
+  let html = '';
+  if (day) {
+    html += `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">מסעדות רלוונטיות ליום ${day.num} (${Array.from(relevantBases).map(b => BASES[b] ? BASES[b].label : b).join(' / ')}) - לחצו "הכל" למעלה כדי לראות את כל הרשימה.</div>`;
+  }
+  if (places.length === 0) {
+    html += `<div class="card">אין המלצות מסעדה ספציפיות ליום הזה - ראו "הכל" למעלה, או חפשו לפי הבסיס הנוכחי.</div>`;
+  }
+  places.forEach(place => {
+    const isClosed = weekdayEn && place.closedDays.includes(weekdayEn);
+    const src = FOOD_SOURCES[place.source] || FOOD_SOURCES.other;
+    const note = (SyncService.state.placeNotes && SyncService.state.placeNotes[place.id]) || '';
+    html += `
+      <div class="card place-card ${isClosed ? 'closed' : ''}">
+        <div class="place-name-row">
+          <div class="place-name">${place.name}</div>
+          <span class="source-chip source-${place.source}">${src.icon} ${src.label}</span>
+        </div>
+        <div class="place-area">${place.area}</div>
+        <a class="place-address-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(place.name, place.area)}">📍 ${place.address} <span class="ext-icon">↗</span></a>
+        ${place.tip ? `<div class="place-tip">${place.tip}</div>` : ''}
+        ${isClosed ? `<div class="place-closed-flag">סגור ב${day.weekday} (${day.date.split('-').reverse().slice(0,2).join('.')})</div>` : ''}
+        <textarea class="place-note" data-place="${place.id}" placeholder="הוסיפו הערה משותפת...">${escapeHtml(note)}</textarea>
+      </div>`;
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('.place-note').forEach(ta => {
+    ta.addEventListener('input', () => debouncedSaveNote(ta.dataset.place, ta.value));
+  });
+}
+
+function renderFoodDishes() {
+  const el = document.getElementById('dishesList');
+  let html = '';
+  FOOD_DISHES.forEach(dish => {
+    const checked = !!(SyncService.state.foodDishes && SyncService.state.foodDishes[dish.id]);
+    const imgHtml = dish.img
+      ? `<img class="dish-img" src="${wikimediaImgUrl(dish.img)}" alt="${dish.name}" onerror="this.outerHTML='<div class=&quot;dish-emoji&quot;>${dish.emoji}</div>'">`
+      : `<div class="dish-emoji">${dish.emoji}</div>`;
+    html += `
+      <div class="card dish-card">
+        ${imgHtml}
+        <div class="dish-info">
+          <div class="dish-name">${dish.name}</div>
+          <div class="dish-desc">${dish.desc}</div>
+        </div>
+        <input type="checkbox" class="dish-check" data-dish="${dish.id}" ${checked ? 'checked' : ''}>
+      </div>`;
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('.dish-check').forEach(cb => {
+    cb.addEventListener('change', () => SyncService.setDish(cb.dataset.dish, cb.checked));
+  });
+}
+
+/* ===== תחבורה ===== */
+function renderTransport() {
+  const el = document.getElementById('transportContent');
+  const day = AppState.allSelected ? null : getDayByNum(AppState.selectedDayNum);
+  let html = '';
+
+  const showPickup = !day || day.num === CAR_RENTAL.pickup.dayNum;
+  const showReturn = !day || day.num === CAR_RENTAL.return.dayNum;
+  const showReminders = !day || day.hasCar;
+  const relevantGas = day ? GAS_STATIONS.filter(g => g.dayNum === day.num) : GAS_STATIONS;
+  const relevantDrives = day ? DRIVES.filter(d => d.fromDay === day.num) : DRIVES;
+
+  if (showPickup) {
+    html += `<div class="card transport-block">
+      <h2>🚗 ${CAR_RENTAL.pickup.label} (יום ${CAR_RENTAL.pickup.dayNum})</h2>
+      <div><b>${CAR_RENTAL.pickup.place}</b></div>
+      <div class="place-address">📍 ${CAR_RENTAL.pickup.address}</div>
+      <div class="place-tip">${CAR_RENTAL.pickup.note}</div>
+      <a class="place-map-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(CAR_RENTAL.pickup.place, '')}">פתח ב-Google Maps ↗</a>
+    </div>`;
+  }
+  if (showReturn) {
+    html += `<div class="card transport-block">
+      <h2>🚗 ${CAR_RENTAL.return.label} (יום ${CAR_RENTAL.return.dayNum})</h2>
+      <div><b>${CAR_RENTAL.return.place}</b></div>
+      <div class="place-address">📍 ${CAR_RENTAL.return.address}</div>
+      <div class="place-tip">${CAR_RENTAL.return.note}</div>
+      <a class="place-map-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(CAR_RENTAL.return.place, '')}">פתח ב-Google Maps ↗</a>
+    </div>`;
+  }
+  if (showReminders) {
+    html += `<div class="card transport-block">
+      <h2>📝 לזכור</h2>
+      <ul class="plain">${CAR_RENTAL.reminders.map(r => `<li>${r}</li>`).join('')}</ul>
+    </div>`;
+  }
+  if (relevantGas.length) {
+    html += `<div class="card transport-block">
+      <h2>⛽ תדלוק וחניה</h2>
+      ${relevantGas.map(g => `<div style="margin-bottom:8px;"><b>${g.name}</b><div class="place-tip">${g.note}</div></div>`).join('')}
+    </div>`;
+  }
+  if (relevantDrives.length) {
+    html += `<div class="card transport-block"><h2>🛣️ נסיעות</h2>`;
+    relevantDrives.forEach(d => {
+      html += `<div class="drive-row"><span>${d.from} ← ${d.to}</span><span>${d.duration}</span></div>`;
+    });
+    html += `</div>`;
+  }
+  if (day && !showPickup && !showReturn && !showReminders && !relevantGas.length && !relevantDrives.length) {
+    html += `<div class="card">אין תוכן תחבורה ליום הזה (אין רכב) - ראו "הכל" למעלה לתמונה המלאה.</div>`;
+  }
+  el.innerHTML = html;
+}
+
+/* ===== ציוד ===== */
+const EYE_ICON = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const EYE_OFF_ICON = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+
+function renderPacking() {
+  const el = document.getElementById('packingList');
+  let html = '';
+  PACKING_LIST.forEach(cat => {
+    html += `<div class="card-day-heading">${cat.icon} ${cat.category}</div><div class="card">`;
+    cat.items.forEach(itemName => {
+      const key = sanitizeKey(cat.category) + '__' + sanitizeKey(itemName);
+      const state = (SyncService.state.packing && SyncService.state.packing[key]) || {};
+      const hidden = !!state.hidden;
+      html += `
+        <div class="packing-item ${hidden ? 'is-hidden' : ''}">
+          <div class="packing-name">${itemName}</div>
+          <div class="packing-checks">
+            <label class="packing-check-wrap">עידן<input type="checkbox" data-key="${key}" data-person="idan" ${state.idan ? 'checked' : ''} ${hidden ? 'disabled' : ''}></label>
+            <label class="packing-check-wrap">אוהד<input type="checkbox" data-key="${key}" data-person="ohad" ${state.ohad ? 'checked' : ''} ${hidden ? 'disabled' : ''}></label>
+            <button type="button" class="packing-hide-btn" data-hide-key="${key}" title="${hidden ? 'סמן כרלוונטי' : 'סמן כלא רלוונטי'}">${hidden ? EYE_OFF_ICON : EYE_ICON}</button>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => SyncService.setPacking(cb.dataset.key, cb.dataset.person, cb.checked));
+  });
+  el.querySelectorAll('.packing-hide-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.hideKey;
+      const current = (SyncService.state.packing && SyncService.state.packing[key] && SyncService.state.packing[key].hidden) || false;
+      SyncService.setPacking(key, 'hidden', !current);
+    });
+  });
+}
+
+/* ===== אתחול ===== */
+function init() {
+  AppState.selectedDayNum = computeAutoDayNum();
+  setupTabs();
+  setupDayNav();
+  renderDayContextBar();
+  showPage('map');
+  SyncService.subscribe(() => {
+    if (AppState.currentPage === 'food') {
+      renderFoodDishes();
+      const editingNote = document.activeElement && document.activeElement.classList.contains('place-note');
+      if (!editingNote) renderFoodPlaces();
+    }
+    if (AppState.currentPage === 'packing') renderPacking();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
