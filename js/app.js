@@ -37,21 +37,49 @@ function renderDayContextBar() {
   document.getElementById('dayContextBar').classList.toggle('all-mode', AppState.allSelected);
 }
 
+function stepDay(delta) {
+  AppState.allSelected = false;
+  AppState.selectedDayNum = Math.min(TRIP_DAYS.length, Math.max(1, AppState.selectedDayNum + delta));
+  onDayContextUpdated();
+}
+
 function setupDayNav() {
-  document.getElementById('dayPrev').addEventListener('click', () => {
-    AppState.allSelected = false;
-    AppState.selectedDayNum = Math.min(TRIP_DAYS.length, AppState.selectedDayNum + 1);
-    onDayContextUpdated();
-  });
-  document.getElementById('dayNext').addEventListener('click', () => {
-    AppState.allSelected = false;
-    AppState.selectedDayNum = Math.max(1, AppState.selectedDayNum - 1);
-    onDayContextUpdated();
-  });
+  document.getElementById('dayPrev').addEventListener('click', () => stepDay(1));
+  document.getElementById('dayNext').addEventListener('click', () => stepDay(-1));
   document.getElementById('btnAll').addEventListener('click', () => {
     AppState.allSelected = !AppState.allSelected;
     onDayContextUpdated();
   });
+}
+
+/* ===== ניווט בין ימים ע"י החלקה (swipe) - שמאלה = יום הבא, ימינה = יום קודם =====
+   מבוטל בתוך מפת ה-Leaflet עצמה כדי לא להתנגש עם גרירת/הזזת המפה. */
+function setupSwipeNav() {
+  const SWIPE_MIN_DISTANCE = 60;
+  const SWIPE_MAX_VERTICAL = 60;
+  const SWIPE_MAX_DURATION = 700;
+  let startX = 0, startY = 0, startTime = 0, tracking = false;
+
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    if (!PAGES_WITH_DAY_BAR.includes(AppState.currentPage)) { tracking = false; return; }
+    if (e.target.closest('#map')) { tracking = false; return; }
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    startTime = Date.now();
+    tracking = true;
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!tracking) return;
+    tracking = false;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+    if (Date.now() - startTime > SWIPE_MAX_DURATION) return;
+    if (Math.abs(deltaX) < SWIPE_MIN_DISTANCE || Math.abs(deltaY) > SWIPE_MAX_VERTICAL) return;
+    stepDay(deltaX < 0 ? 1 : -1);
+  }, { passive: true });
 }
 
 function onDayContextUpdated() {
@@ -294,6 +322,7 @@ function init() {
   AppState.selectedDayNum = computeAutoDayNum();
   setupTabs();
   setupDayNav();
+  setupSwipeNav();
   renderDayContextBar();
   showPage('itinerary');
   SyncService.subscribe(() => {
