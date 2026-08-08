@@ -8,6 +8,11 @@ const HOTELS_PLACEHOLDER = [
   { dayNum: 8, base: 'palermo', name: '🏨 מלון פלרמו - להשלמה', lat: 38.1147, lng: 13.3641, note: 'אזור מרכז היסטורי / קלסה / קוואטרו קנטי' },
 ];
 
+const AIRPORTS = [
+  { dayNum: 1, name: '🛬 שדה תעופה קטניה (פונטנרוסה) - נחיתה', lat: 37.4668, lng: 15.0664 },
+  { dayNum: 11, name: '🛫 שדה תעופה קטניה (פונטנרוסה) - המראה', lat: 37.4668, lng: 15.0664 },
+];
+
 const MAP_ICONS = {
-  hotel: '🏨', food: '🍽️', attraction: '📍', car: '🚗', gas: '⛽', beach: '🏖️',
+  hotel: '🏨', food: '🍽️', attraction: '📍', car: '🚗', gas: '⛽', beach: '🏖️', airport: '🛬',
 };

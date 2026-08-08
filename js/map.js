@@ -39,6 +39,9 @@ function buildMapPoints() {
   });
   points.push({ dayNum: CAR_RENTAL.pickup.dayNum, time: '', label: CAR_RENTAL.pickup.place + ' (איסוף)', icon: '🚗', lat: CAR_RENTAL.pickup.lat, lng: CAR_RENTAL.pickup.lng, type: 'car' });
   points.push({ dayNum: CAR_RENTAL.return.dayNum, time: '', label: CAR_RENTAL.return.place + ' (החזרה)', icon: '🚗', lat: CAR_RENTAL.return.lat, lng: CAR_RENTAL.return.lng, type: 'car' });
+  AIRPORTS.forEach(a => {
+    points.push({ dayNum: a.dayNum, time: '', label: a.name, icon: '🛬', lat: a.lat, lng: a.lng, type: 'airport' });
+  });
   return points;
 }
 

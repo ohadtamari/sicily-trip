@@ -31,8 +31,8 @@ function renderDayContextBar() {
   const day = getDayByNum(AppState.selectedDayNum);
   document.getElementById('dayNumLabel').textContent = `יום ${day.num} מתוך ${TRIP_DAYS.length}`;
   document.getElementById('dayDateLabel').textContent = `${formatDDMM(day.date)} · ${day.weekday}`;
-  document.getElementById('dayPrev').disabled = day.num <= 1;
-  document.getElementById('dayNext').disabled = day.num >= TRIP_DAYS.length;
+  document.getElementById('dayPrev').disabled = day.num >= TRIP_DAYS.length;
+  document.getElementById('dayNext').disabled = day.num <= 1;
   document.getElementById('btnAll').classList.toggle('active', AppState.allSelected);
   document.getElementById('dayContextBar').classList.toggle('all-mode', AppState.allSelected);
 }
@@ -40,12 +40,12 @@ function renderDayContextBar() {
 function setupDayNav() {
   document.getElementById('dayPrev').addEventListener('click', () => {
     AppState.allSelected = false;
-    AppState.selectedDayNum = Math.max(1, AppState.selectedDayNum - 1);
+    AppState.selectedDayNum = Math.min(TRIP_DAYS.length, AppState.selectedDayNum + 1);
     onDayContextUpdated();
   });
   document.getElementById('dayNext').addEventListener('click', () => {
     AppState.allSelected = false;
-    AppState.selectedDayNum = Math.min(TRIP_DAYS.length, AppState.selectedDayNum + 1);
+    AppState.selectedDayNum = Math.max(1, AppState.selectedDayNum - 1);
     onDayContextUpdated();
   });
   document.getElementById('btnAll').addEventListener('click', () => {
