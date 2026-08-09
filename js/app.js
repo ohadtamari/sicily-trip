@@ -52,7 +52,7 @@ function setupDayNav() {
   });
 }
 
-/* ===== ניווט בין ימים ע"י החלקה (swipe) - שמאלה = יום הבא, ימינה = יום קודם =====
+/* ===== ניווט בין ימים ע"י החלקה (swipe) - ימינה = יום הבא, שמאלה = יום קודם (RTL) =====
    מבוטל בתוך מפת ה-Leaflet עצמה כדי לא להתנגש עם גרירת/הזזת המפה. */
 function setupSwipeNav() {
   const SWIPE_MIN_DISTANCE = 60;
@@ -78,7 +78,7 @@ function setupSwipeNav() {
     const deltaY = touch.clientY - startY;
     if (Date.now() - startTime > SWIPE_MAX_DURATION) return;
     if (Math.abs(deltaX) < SWIPE_MIN_DISTANCE || Math.abs(deltaY) > SWIPE_MAX_VERTICAL) return;
-    stepDay(deltaX < 0 ? 1 : -1);
+    stepDay(deltaX < 0 ? -1 : 1);
   }, { passive: true });
 }
 
