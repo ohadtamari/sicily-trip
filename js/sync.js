@@ -111,6 +111,7 @@ const SyncService = {
     await new Promise((resolve, reject) => {
       let resolved = false;
       onSnapshot(ref, (snap) => {
+        this._mode = 'firestore'; // מוגדר כאן (ולא רק אחרי ה-await ב-init) כדי שה-emit הראשון כבר ישקף מצב מדויק
         if (snap.exists()) {
           this.state = this._withDefaults(snap.data());
         } else {
@@ -126,4 +127,4 @@ const SyncService = {
   },
 };
 
-SyncService.init();
+SyncService.readyPromise = SyncService.init();

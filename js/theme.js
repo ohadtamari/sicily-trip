@@ -1,6 +1,8 @@
-// ערכת נושא: light/dark אוטומטי לפי שקיעה/זריחה מקומיים (SunCalc), עם טוגל ידני שנשמר מקומית
+// ערכת נושא: light/dark אוטומטי לפי שקיעה/זריחה מקומיים (SunCalc), עם טוגל ידני 3 מצבים:
+// אוטומטי (🌗) -> בהיר קבוע (☀️) -> כהה קבוע (🌙) -> חזרה לאוטומטי...
+// המצב הידני נשמר בזיכרון בלבד (לא ב-localStorage) - כל טעינה מחדש של הדף חוזרת לאוטומטי.
 
-const THEME_OVERRIDE_KEY = 'sicily-theme-override'; // 'light' | 'dark' | null (=אוטומטי)
+let _themeMode = 'auto'; // 'auto' | 'light' | 'dark' - באיפוס בכל טעינת דף
 
 function computeAutoTheme(now = new Date()) {
   const coords = getCurrentBaseCoords();
@@ -14,23 +16,37 @@ function computeAutoTheme(now = new Date()) {
   }
 }
 
-function applyTheme(theme) {
+function getThemeMode() {
+  return _themeMode;
+}
+
+const THEME_MODE_ICON = { auto: '🌗', light: '☀️', dark: '🌙' };
+const THEME_MODE_TITLE = {
+  auto: 'מצב אוטומטי (לפי שקיעה/זריחה בסיציליה) - לחצו למצב בהיר קבוע',
+  light: 'מצב בהיר קבוע - לחצו למצב כהה קבוע',
+  dark: 'מצב כהה קבוע - לחצו לחזרה למצב אוטומטי',
+};
+
+function applyTheme(theme, mode) {
   document.documentElement.setAttribute('data-theme', theme);
   const btn = document.getElementById('themeToggle');
-  if (btn) btn.textContent = theme === 'dark' ? '🌙' : '☀️';
+  if (btn) {
+    btn.textContent = THEME_MODE_ICON[mode];
+    btn.title = THEME_MODE_TITLE[mode];
+  }
   if (typeof refreshMapTiles === 'function') refreshMapTiles();
 }
 
 function refreshTheme() {
-  const override = localStorage.getItem(THEME_OVERRIDE_KEY);
-  applyTheme(override || computeAutoTheme());
+  const mode = getThemeMode();
+  const theme = mode === 'auto' ? computeAutoTheme() : mode;
+  applyTheme(theme, mode);
 }
 
 function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || computeAutoTheme();
-  const next = current === 'dark' ? 'light' : 'dark';
-  localStorage.setItem(THEME_OVERRIDE_KEY, next);
-  applyTheme(next);
+  const current = getThemeMode();
+  _themeMode = current === 'auto' ? 'light' : (current === 'light' ? 'dark' : 'auto');
+  refreshTheme();
 }
 
 function initTheme() {

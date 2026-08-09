@@ -100,6 +100,7 @@ const FOOD_DISHES = [
   { id: 'sarde-beccafico', name: 'Sarde a Beccafico', desc: 'סרדינים ממולאים בפירורי לחם, צימוקים וצנוברים', emoji: '🐟' },
   { id: 'pane-meusa', name: 'Pane ca\' Meusa', desc: 'כריך טחול פלרמיטני קלאסי - לא לחלשי לב', emoji: '🥖' },
   { id: 'stigghiole', name: 'Stigghiole', desc: 'קרביים על האש - סטריט פוד קטני אותנטי', emoji: '🍢' },
+  { id: 'cipollina', name: 'Cipollina', desc: 'מאפה בצק עלים מלוח במילוי רוטב עגבניות, גבינה ונקניק - קלאסיקת מאפייה סיציליאנית (בעיקר בקטניה)', emoji: '🥟' },
 ];
 
 function wikimediaImgUrl(filename) {
