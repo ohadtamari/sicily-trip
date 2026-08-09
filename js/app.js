@@ -238,7 +238,7 @@ function renderTransport() {
 
   if (showPickup) {
     html += `<div class="card transport-block">
-      <h2>🚗 ${CAR_RENTAL.pickup.label} (יום ${CAR_RENTAL.pickup.dayNum})</h2>
+      <h2>🚗 ${CAR_RENTAL.pickup.label} (יום ${CAR_RENTAL.pickup.dayNum}) · ${formatDDMM(CAR_RENTAL.pickup.date)} ${CAR_RENTAL.pickup.time}</h2>
       <div><b>${CAR_RENTAL.pickup.place}</b></div>
       <div class="place-address">📍 ${CAR_RENTAL.pickup.address}</div>
       <div class="place-tip">${CAR_RENTAL.pickup.note}</div>
@@ -247,7 +247,7 @@ function renderTransport() {
   }
   if (showReturn) {
     html += `<div class="card transport-block">
-      <h2>🚗 ${CAR_RENTAL.return.label} (יום ${CAR_RENTAL.return.dayNum})</h2>
+      <h2>🚗 ${CAR_RENTAL.return.label} (יום ${CAR_RENTAL.return.dayNum}) · ${formatDDMM(CAR_RENTAL.return.date)} ${CAR_RENTAL.return.time}</h2>
       <div><b>${CAR_RENTAL.return.place}</b></div>
       <div class="place-address">📍 ${CAR_RENTAL.return.address}</div>
       <div class="place-tip">${CAR_RENTAL.return.note}</div>
