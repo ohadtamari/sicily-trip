@@ -66,6 +66,71 @@ function initMap() {
   _routeLayer = L.layerGroup().addTo(_leafletMap);
   refreshMapTiles();
   renderMap();
+
+  const locateBtn = document.getElementById('locateMeBtn');
+  if (locateBtn) locateBtn.addEventListener('click', toggleLocate);
+}
+
+/* ===== "המיקום שלי" - Geolocation ===== */
+let _userMarker = null;
+let _userAccuracyCircle = null;
+let _geoWatchId = null;
+
+function userLocationIcon() {
+  return L.divIcon({
+    html: `<div style="width:16px;height:16px;border-radius:50%;background:#4285F4;border:3px solid #fff;box-shadow:0 0 0 2px rgba(66,133,244,.45), 0 1px 4px rgba(0,0,0,.4);"></div>`,
+    className: '', iconSize: [16, 16], iconAnchor: [8, 8],
+  });
+}
+
+function handleGeoSuccess(pos) {
+  const { latitude, longitude, accuracy } = pos.coords;
+  const btn = document.getElementById('locateMeBtn');
+  if (btn) { btn.classList.remove('locating'); btn.classList.add('active'); }
+  if (!_leafletMap) return;
+
+  if (!_userMarker) {
+    _userMarker = L.marker([latitude, longitude], { icon: userLocationIcon(), zIndexOffset: 1000 }).addTo(_leafletMap);
+    _userMarker.bindPopup('המיקום שלך');
+    _leafletMap.setView([latitude, longitude], 14);
+  } else {
+    _userMarker.setLatLng([latitude, longitude]);
+  }
+  if (_userAccuracyCircle) _leafletMap.removeLayer(_userAccuracyCircle);
+  _userAccuracyCircle = L.circle([latitude, longitude], { radius: accuracy, color: '#4285F4', weight: 1, fillOpacity: 0.08 }).addTo(_leafletMap);
+}
+
+function handleGeoError(err) {
+  const btn = document.getElementById('locateMeBtn');
+  if (btn) { btn.classList.remove('locating', 'active'); }
+  _geoWatchId = null;
+  let msg = 'לא ניתן היה לאתר את המיקום שלכם.';
+  if (err.code === 1) msg = 'הגישה למיקום נחסמה - כדי לראות את עצמכם על המפה, אשרו הרשאת מיקום להגדרות > Safari (או לדפדפן) באייפון, ונסו שוב.';
+  else if (err.code === 2) msg = 'המיקום אינו זמין כרגע - נסו שוב בעוד רגע.';
+  else if (err.code === 3) msg = 'תם הזמן לאיתור המיקום - נסו שוב.';
+  alert(msg);
+}
+
+function toggleLocate() {
+  if (!navigator.geolocation) { alert('הדפדפן הזה לא תומך באיתור מיקום.'); return; }
+  const btn = document.getElementById('locateMeBtn');
+  if (_geoWatchId !== null) {
+    if (_userMarker) _leafletMap.setView(_userMarker.getLatLng(), 14);
+    return;
+  }
+  if (btn) btn.classList.add('locating');
+  _geoWatchId = navigator.geolocation.watchPosition(handleGeoSuccess, handleGeoError, {
+    enableHighAccuracy: true, maximumAge: 10000, timeout: 15000,
+  });
+}
+
+function stopLocating() {
+  if (_geoWatchId !== null) {
+    navigator.geolocation.clearWatch(_geoWatchId);
+    _geoWatchId = null;
+  }
+  const btn = document.getElementById('locateMeBtn');
+  if (btn) { btn.classList.remove('locating', 'active'); }
 }
 
 function refreshMapTiles() {

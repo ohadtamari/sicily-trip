@@ -13,6 +13,7 @@ function showPage(pageId) {
   document.getElementById('dayContextBar').style.display = PAGES_WITH_DAY_BAR.includes(pageId) ? 'flex' : 'none';
 
   if (pageId === 'map') { initMap(); setTimeout(() => _leafletMap && _leafletMap.invalidateSize(), 50); }
+  else if (typeof stopLocating === 'function') { stopLocating(); }
   if (pageId === 'itinerary') renderItinerary();
   if (pageId === 'food') { renderFoodPlaces(); renderFoodDishes(); }
   if (pageId === 'transport') renderTransport();
