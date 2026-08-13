@@ -26,7 +26,7 @@ const TRIP_DAYS = [
       { time: '01:10', dayOffset: 1, title: 'נחיתה בקטניה', desc: '', icon: '🛬' },
       { time: '01:10', dayOffset: 1, title: 'פספורט + מזוודות', desc: '~40 דק\'', icon: '🛂' },
       { time: '01:50', dayOffset: 1, title: 'מונית למלון', desc: '~20-25 דק\' - לא תחבורה ציבורית בשעה הזו', icon: '🚕' },
-      { time: '02:15', dayOffset: 1, title: 'צ\'ק-אין, שינה', desc: '', icon: '😴' },
+      { time: '02:15', dayOffset: 1, title: 'צ\'ק אין ב-Vivere Hotel (Via Vittorio Emanuele II 210)', desc: 'שינה', icon: '😴', base: 'catania', lat: 37.5028, lng: 15.0863 },
     ],
   },
   {
@@ -42,7 +42,6 @@ const TRIP_DAYS = [
       { time: '20:00', title: 'ארוחת ערב + גרניטה בפיסטוק', desc: 'ספסיאליטה מקומית - שווה לתכנן, גם לארוחת בוקר למחרת', icon: '🍧' },
       { time: '22:00', title: 'פיאצה בליני / ויה מונטסאנו (Piazza Bellini / Via Montesano)', desc: 'ברים, אווירת סטודנטים', icon: '🍹' },
     ],
-    note: 'חניה: גם אם לא נוהגים היום, שווה לבחור מלון עם חניה/גראז\' קרוב - מהיום הבא כבר יש רכב.',
   },
   {
     num: 3, date: '2026-09-19', weekday: 'שבת', base: 'catania',
@@ -62,7 +61,7 @@ const TRIP_DAYS = [
     title: 'קטניה ← טאורמינה', hasCar: true,
     items: [
       { time: '09:00', title: 'בוקר אחרון בקטניה', desc: 'מה שלא הספקתם ביום 2 - למשל טירת אורסינו, מונסטרו דיי בנדטיני', icon: '🏰' },
-      { time: '12:00', title: 'צ\'ק-אאוט מהמלון', desc: '', icon: '🧳' },
+      { time: '12:00', title: 'צ\'ק-אאוט מ-Vivere Hotel', desc: '', icon: '🧳' },
       { time: '12:30', title: 'ארוחת צהריים', desc: '~1 שעה', icon: '🍽️' },
       { time: '13:30', title: 'נסיעה לטאורמינה', desc: '~45 דק\'', icon: '🛣️' },
       { time: '14:15', title: 'צ\'ק אין ב-Hotel Villa Paradiso (Via Roma 2)', desc: 'חניה במקום, מרכז העיר, גישה לחוף פרטי בלטויאני', icon: '🏨', base: 'taormina', lat: 37.8524, lng: 15.2880 },

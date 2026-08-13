@@ -37,19 +37,23 @@ const GAS_STATIONS = [
 ];
 
 const DRIVES = [
-  { fromDay: 3, from: 'קטניה', to: 'אורטיג\'יה', duration: '~50 דק\'' },
-  { fromDay: 3, from: 'אורטיג\'יה', to: 'נוטו', duration: '~35 דק\'' },
-  { fromDay: 3, from: 'נוטו', to: 'קטניה', duration: '~1 שעה' },
-  { fromDay: 4, from: 'קטניה', to: 'טאורמינה', duration: '~45 דק\'' },
-  { fromDay: 6, from: 'טאורמינה', to: 'נחל אלקנטרה', duration: '~35 דק\'' },
-  { fromDay: 6, from: 'נחל אלקנטרה', to: 'סנטה ונרינה (יקב)', duration: '~55 דק\'' },
-  { fromDay: 7, from: 'סנטה ונרינה (יקב)', to: 'Rifugio Sapienza (אטנה)', duration: '~35 דק\'' },
-  { fromDay: 7, from: 'Rifugio Sapienza (אטנה)', to: 'סנטה ונרינה (יקב)', duration: '~35 דק\'' },
-  { fromDay: 8, from: 'סנטה ונרינה (יקב)', to: 'פלרמו (שדה תעופה)', duration: '~2.5-3 שעות' },
-  { fromDay: 8, from: 'שדה פלרמו', to: 'מרכז פלרמו', duration: '~50-60 דק\' (רכבת/אוטובוס)' },
-  { fromDay: 10, from: 'פלרמו', to: 'צ\'פאלו', duration: '~40-45 דק\' (רכבת)' },
-  { fromDay: 10, from: 'צ\'פאלו', to: 'פלרמו', duration: '~40-45 דק\' (רכבת)' },
-  { fromDay: 10, from: 'פלרמו', to: 'מונריאלה', duration: '~25-30 דק\' (אוטובוס AST)' },
-  { fromDay: 10, from: 'מונריאלה', to: 'פלרמו', duration: '~25-30 דק\' (אוטובוס)' },
-  { fromDay: 11, from: 'פלרמו', to: 'קטניה שדה תעופה', duration: '~3 שעות (רכבת ישירה)' },
+  { fromDay: 3, from: 'קטניה', to: 'אורטיג\'יה', duration: '~50 דק\'', toLat: 37.0587, toLng: 15.2933 },
+  { fromDay: 3, from: 'אורטיג\'יה', to: 'נוטו', duration: '~35 דק\'', toLat: 36.8909, toLng: 15.0709 },
+  { fromDay: 3, from: 'נוטו', to: 'קטניה', duration: '~1 שעה', toLat: 37.5079, toLng: 15.0830 },
+  { fromDay: 4, from: 'קטניה', to: 'טאורמינה', duration: '~45 דק\'', toLat: 37.8516, toLng: 15.2853 },
+  { fromDay: 6, from: 'טאורמינה', to: 'נחל אלקנטרה', duration: '~35 דק\'', toLat: 37.8804, toLng: 15.1734 },
+  { fromDay: 6, from: 'נחל אלקנטרה', to: 'סנטה ונרינה (יקב)', duration: '~55 דק\'', toLat: 37.6980, toLng: 15.1330 },
+  { fromDay: 7, from: 'סנטה ונרינה (יקב)', to: 'Rifugio Sapienza (אטנה)', duration: '~35 דק\'', toLat: 37.7000, toLng: 14.9958 },
+  { fromDay: 7, from: 'Rifugio Sapienza (אטנה)', to: 'סנטה ונרינה (יקב)', duration: '~35 דק\'', toLat: 37.6980, toLng: 15.1330 },
+  { fromDay: 8, from: 'סנטה ונרינה (יקב)', to: 'פלרמו (שדה תעופה)', duration: '~2.5-3 שעות', toLat: 38.1809, toLng: 13.0910 },
+  { fromDay: 8, from: 'שדה פלרמו', to: 'מרכז פלרמו', duration: '~50-60 דק\' (רכבת/אוטובוס)', toLat: 38.1157, toLng: 13.3615 },
+  { fromDay: 10, from: 'פלרמו', to: 'צ\'פאלו', duration: '~40-45 דק\' (רכבת)', toLat: 38.0400, toLng: 14.0231 },
+  { fromDay: 10, from: 'צ\'פאלו', to: 'פלרמו', duration: '~40-45 דק\' (רכבת)', toLat: 38.1157, toLng: 13.3615 },
+  { fromDay: 10, from: 'פלרמו', to: 'מונריאלה', duration: '~25-30 דק\' (אוטובוס AST)', toLat: 38.0819, toLng: 13.2903 },
+  { fromDay: 10, from: 'מונריאלה', to: 'פלרמו', duration: '~25-30 דק\' (אוטובוס)', toLat: 38.1157, toLng: 13.3615 },
+  { fromDay: 11, from: 'פלרמו', to: 'קטניה שדה תעופה', duration: '~3 שעות (רכבת ישירה)', toLat: 37.4668, toLng: 15.0664 },
 ];
+
+function wazeNavUrl(lat, lng) {
+  return 'https://waze.com/ul?ll=' + lat + '%2C' + lng + '&navigate=yes';
+}

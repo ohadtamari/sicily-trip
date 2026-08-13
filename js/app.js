@@ -5,6 +5,8 @@ const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'food', 'transport'];
 
 function sanitizeKey(s) { return s.replace(/[^\p{L}\p{N}]+/gu, '_'); }
 
+const WAZE_ICON = `<svg viewBox="0 0 24 24" width="16" height="16" fill="#33ccff" stroke="none"><path d="M12 2 3 21l9-4.5L21 21 12 2z"/></svg>`;
+
 /* ===== ניווט טאבים ===== */
 function showPage(pageId) {
   AppState.currentPage = pageId;
@@ -270,7 +272,10 @@ function renderTransport() {
   if (relevantDrives.length) {
     html += `<div class="card transport-block"><h2>🛣️ נסיעות</h2>`;
     relevantDrives.forEach(d => {
-      html += `<div class="drive-row"><span>${d.from} ← ${d.to}</span><span>${d.duration}</span></div>`;
+      const wazeLink = (d.toLat && d.toLng)
+        ? `<a class="waze-link" target="_blank" rel="noopener" href="${wazeNavUrl(d.toLat, d.toLng)}" title="נווט ב-Waze" aria-label="נווט ב-Waze">${WAZE_ICON}</a>`
+        : '';
+      html += `<div class="drive-row"><span>${d.from} ← ${d.to}</span><span class="drive-row-right">${d.duration}${wazeLink}</span></div>`;
     });
     html += `</div>`;
   }
