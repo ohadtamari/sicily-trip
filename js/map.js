@@ -42,6 +42,9 @@ function buildMapPoints() {
   AIRPORTS.forEach(a => {
     points.push({ dayNum: a.dayNum, time: '', label: a.name, icon: '🛬', lat: a.lat, lng: a.lng, type: 'airport' });
   });
+  PALERMO_EXTRA_POINTS.forEach(p => {
+    points.push({ dayNum: p.dayNum, time: '', label: p.name + (p.note ? ' - ' + p.note : ''), icon: '📍', lat: p.lat, lng: p.lng, type: 'attraction' });
+  });
   return points;
 }
 

@@ -159,7 +159,7 @@ function renderFoodPlaces() {
       <div class="card place-card ${isClosed ? 'closed' : ''}">
         <div class="place-name-row">
           <div class="place-name">${place.name}</div>
-          <span class="source-chip source-${place.source}">${src.icon} ${src.label}</span>
+          <span class="source-chip source-${place.source}">${src.icon} ${src.label}${place.friendName ? ' - ' + place.friendName : ''}</span>
         </div>
         <div class="place-area">${place.area}</div>
         <a class="place-address-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(place.name, place.area)}">📍 ${place.address} <span class="ext-icon">↗</span></a>
