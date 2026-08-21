@@ -346,13 +346,15 @@ function renderPacking() {
   let html = '';
   PACKING_LIST.forEach(cat => {
     html += `<div class="card-day-heading">${cat.icon} ${cat.category}</div><div class="card">`;
-    cat.items.forEach(itemName => {
+    cat.items.forEach(item => {
+      const itemName = typeof item === 'string' ? item : item.name;
+      const itemQty = typeof item === 'string' ? '' : item.qty;
       const key = sanitizeKey(cat.category) + '__' + sanitizeKey(itemName);
       const state = (SyncService.state.packing && SyncService.state.packing[key]) || {};
       const hidden = !!state.hidden;
       html += `
         <div class="packing-item ${hidden ? 'is-hidden' : ''}">
-          <div class="packing-name">${itemName}</div>
+          <div class="packing-name">${itemName}${itemQty ? `<span class="packing-qty">${itemQty}</span>` : ''}</div>
           <div class="packing-checks">
             <button type="button" class="packing-hide-btn" data-hide-key="${key}" title="${hidden ? 'סמן כרלוונטי' : 'סמן כלא רלוונטי'}">${hidden ? EYE_ICON : EYE_OFF_ICON}</button>
             <label class="packing-check-wrap">עידן<input type="checkbox" data-key="${key}" data-person="idan" ${state.idan ? 'checked' : ''} ${hidden ? 'disabled' : ''}></label>
