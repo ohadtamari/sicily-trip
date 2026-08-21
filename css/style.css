@@ -157,6 +157,25 @@ a { color: var(--accent); }
 .itin-desc { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
 .itin-note { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 8px; }
 
+/* מה לעשות */
+.checklist-item { display: flex; gap: 12px; align-items: flex-start; }
+.checklist-check { width: 22px; height: 22px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; margin-top: 3px; }
+.checklist-body { flex: 1; min-width: 0; }
+.checklist-name-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.checklist-name { font-weight: 700; flex: 1; min-width: 0; }
+.checklist-name-en { font-weight: 400; color: var(--text-muted); font-size: 0.85em; }
+.checklist-day-badge {
+  font-size: 0.7rem; font-weight: 600; color: var(--accent); background: var(--bg-sunken);
+  border-radius: 10px; padding: 2px 8px; white-space: nowrap; flex-shrink: 0;
+}
+.checklist-note { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+.checklist-map-link { display: inline-block; text-decoration: none; color: var(--accent); font-size: 0.95rem; font-weight: 700; flex-shrink: 0; }
+.checklist-map-link:hover { text-decoration: underline; }
+.checklist-item.is-done { opacity: 0.55; }
+.checklist-item.is-done .checklist-name { text-decoration: line-through; }
+.checklist-item.is-optional { border-style: dashed; }
+.checklist-optional-heading { color: var(--text-muted); border-bottom-color: var(--text-muted); }
+
 /* אוכל - שתי עמודות */
 .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 @media (max-width: 720px) { .food-grid { grid-template-columns: 1fr; } }
@@ -252,6 +271,8 @@ ul.plain li { margin-bottom: 4px; font-size: 0.88rem; }
 
 /* מפה */
 .map-wrap { position: relative; }
+.gmaps-link { display: inline-block; margin-inline-start: 4px; text-decoration: none; color: var(--accent); font-weight: 700; }
+.gmaps-link:hover { text-decoration: underline; }
 #map { height: calc(100vh - 220px); min-height: 340px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
 .map-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 0.78rem; color: var(--text-muted); }
 .locate-btn {

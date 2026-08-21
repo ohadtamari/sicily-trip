@@ -6,7 +6,7 @@ const SYNC_DOC_PATH = { collection: 'trips', doc: 'sicily2026' };
 const LOCAL_KEY = 'sicily-trip-sync-data';
 
 const SyncService = {
-  state: { packing: {}, foodDishes: {}, placeNotes: {} },
+  state: { packing: {}, foodDishes: {}, placeNotes: {}, checklist: {} },
   _subscribers: [],
   _mode: 'local',
   _firestoreDocRef: null,
@@ -29,6 +29,7 @@ const SyncService = {
       packing: (loaded && loaded.packing) || {},
       foodDishes: (loaded && loaded.foodDishes) || {},
       placeNotes: (loaded && loaded.placeNotes) || {},
+      checklist: (loaded && loaded.checklist) || {},
     };
   },
 
@@ -48,6 +49,12 @@ const SyncService = {
     if (!this.state.placeNotes) this.state.placeNotes = {};
     this.state.placeNotes[placeId] = text;
     await this._persist('placeNotes', this.state.placeNotes);
+  },
+
+  async setChecklistItem(itemId, value) {
+    if (!this.state.checklist) this.state.checklist = {};
+    this.state.checklist[itemId] = value;
+    await this._persist('checklist', this.state.checklist);
   },
 
   async _persist(field, value) {

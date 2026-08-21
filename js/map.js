@@ -157,7 +157,8 @@ function renderMap() {
     const isHighlighted = selectedDay === null || p.dayNum === selectedDay;
     const marker = L.marker([p.lat, p.lng], { icon: emojiDivIcon(p.icon, !isHighlighted) });
     const timeStr = p.time ? `<b>${p.time}</b> · ` : '';
-    marker.bindPopup(`${timeStr}${p.label}`);
+    const gmapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + p.lat + ',' + p.lng;
+    marker.bindPopup(`${timeStr}${p.label} <a class="gmaps-link" href="${gmapsUrl}" target="_blank" rel="noopener" title="פתח ב-Google Maps" aria-label="פתח ב-Google Maps">↗</a>`);
     marker.addTo(_markersLayer);
     if (isHighlighted) bounds.push([p.lat, p.lng]);
   });

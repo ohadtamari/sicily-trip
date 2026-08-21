@@ -1,7 +1,7 @@
 // בקר ראשי: ניתוב טאבים, פס הקשר-יום, ורינדור תוכן העמודים
 
 const ENGLISH_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'food', 'transport'];
+const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'checklist', 'food', 'transport'];
 
 function sanitizeKey(s) { return s.replace(/[^\p{L}\p{N}]+/gu, '_'); }
 
@@ -17,6 +17,7 @@ function showPage(pageId) {
   if (pageId === 'map') { initMap(); setTimeout(() => _leafletMap && _leafletMap.invalidateSize(), 50); }
   else if (typeof stopLocating === 'function') { stopLocating(); }
   if (pageId === 'itinerary') renderItinerary();
+  if (pageId === 'checklist') renderChecklist();
   if (pageId === 'food') { renderFoodPlaces(); renderFoodDishes(); }
   if (pageId === 'transport') renderTransport();
   if (pageId === 'packing') renderPacking();
@@ -89,6 +90,7 @@ function onDayContextUpdated() {
   renderDayContextBar();
   notifyDayContextChange();
   if (AppState.currentPage === 'itinerary') renderItinerary();
+  if (AppState.currentPage === 'checklist') renderChecklist();
   if (AppState.currentPage === 'food') renderFoodPlaces();
   if (AppState.currentPage === 'transport') renderTransport();
 }
@@ -116,6 +118,56 @@ function renderItinerary() {
     if (day.note) html += `<div class="itin-note">💡 ${day.note}</div>`;
   });
   el.innerHTML = html;
+}
+
+/* ===== מה לעשות ===== */
+function renderChecklistItem(item) {
+  const checked = !!(SyncService.state.checklist && SyncService.state.checklist[item.id]);
+  const url = checklistMapUrl(item.lat, item.lng, item.placeId);
+  const noteParts = [item.note, item.friendName ? `המלצת ${item.friendName}` : ''].filter(Boolean);
+  return `
+    <div class="card checklist-item ${checked ? 'is-done' : ''} ${item.optional ? 'is-optional' : ''}">
+      <input type="checkbox" class="checklist-check" data-id="${item.id}" ${checked ? 'checked' : ''}>
+      <div class="checklist-body">
+        <div class="checklist-name-row">
+          <div class="checklist-name">${item.nameHe}<span class="checklist-name-en"> · ${item.nameIt}</span></div>
+          <a class="checklist-map-link" target="_blank" rel="noopener" href="${url}" title="פתח ב-Google Maps" aria-label="פתח ב-Google Maps">↗</a>
+          <span class="checklist-day-badge">${item.dayLabel}</span>
+        </div>
+        ${noteParts.length ? `<div class="checklist-note">${noteParts.join(' · ')}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderChecklist() {
+  const el = document.getElementById('checklistList');
+  const day = AppState.allSelected ? null : getDayByNum(AppState.selectedDayNum);
+  const relevantBases = day ? getRelevantBasesForDay(day) : null;
+  const items = relevantBases ? CHECKLIST_ITEMS.filter(it => relevantBases.has(it.base)) : CHECKLIST_ITEMS;
+
+  let html = '';
+  if (day) {
+    html += `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">פעילויות רלוונטיות ליום ${day.num} (${Array.from(relevantBases).map(b => BASES[b] ? BASES[b].label : b).join(' / ')}) - לחצו "הכל" למעלה כדי לראות את כל הרשימה.</div>`;
+  }
+  if (items.length === 0) {
+    html += `<div class="card">אין המלצות ספציפיות ליום הזה - ראו "הכל" למעלה.</div>`;
+  }
+
+  if (day) {
+    items.forEach(item => { html += renderChecklistItem(item); });
+  } else {
+    CHECKLIST_AREAS.forEach(area => {
+      const areaItems = items.filter(it => it.areaId === area.id);
+      if (!areaItems.length) return;
+      html += `<div class="card-day-heading${area.id === 'optional' ? ' checklist-optional-heading' : ''}">${area.label}</div>`;
+      areaItems.forEach(item => { html += renderChecklistItem(item); });
+    });
+  }
+
+  el.innerHTML = html;
+  el.querySelectorAll('.checklist-check').forEach(cb => {
+    cb.addEventListener('change', () => SyncService.setChecklistItem(cb.dataset.id, cb.checked));
+  });
 }
 
 /* ===== אוכל ===== */
@@ -338,6 +390,7 @@ function init() {
       if (!editingNote) renderFoodPlaces();
     }
     if (AppState.currentPage === 'packing') renderPacking();
+    if (AppState.currentPage === 'checklist') renderChecklist();
   });
 }
 
