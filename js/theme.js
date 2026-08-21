@@ -55,6 +55,10 @@ function initTheme() {
   if (btn) btn.addEventListener('click', toggleTheme);
   onDayContextChange(refreshTheme);
   setInterval(refreshTheme, 30 * 60 * 1000); // רענון כל 30 דקות (חוצה שקיעה/זריחה בזמן שהאתר פתוח)
+  // ב-iOS, פתיחת bookmark למסך הבית לרוב רק מעלה חזרה קדימה עמוד קיים (ללא רענון),
+  // וטיימרים לא רצים ברקע - לכן צריך לרענן את התאורה במפורש כשהאפליקציה חוזרת לחזית
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshTheme(); });
+  window.addEventListener('pageshow', refreshTheme);
 }
 
 document.addEventListener('DOMContentLoaded', initTheme);
