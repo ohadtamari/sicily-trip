@@ -254,6 +254,17 @@ const FOOD_PLACES = [
     area: 'פלרמו, ליד פיאצה פוליטאמה', address: 'Via Riccardo Wagner 8/C, 90139 Palermo',
     tip: 'מאפיה (עוגות קטנות כאלה מפונפנות) שממש אהבתי. מעוצבת מחריד', closedDays: [],
   },
+  // אופציות עצירה מהירה ביום הנסיעה לפלרמו (יום 8) - על ציר הכביש A19
+  {
+    id: 'mcdonalds-enna', name: "McDonald's Enna (McDrive)", base: 'a19route', source: 'other',
+    area: 'אנה - כ-45 דק\' נהיגה מסנטה ונרינה, בערך באמצע הדרך לפלרמו', address: 'Via Libero Grassi 16F-16M, 94100 Enna',
+    tip: 'עצירה מהירה עם מקדראייב - נקודת עצירה נוחה כשליש-מחצית מהדרך לפלרמו', closedDays: [],
+  },
+  {
+    id: 'mcdonalds-termini-imerese', name: "McDonald's - Autogrill Caracoli Nord", base: 'a19route', source: 'other',
+    area: 'תחנת שירות A19, ק"מ 164 (כיוון פלרמו), ליד טרמיני אימרזה', address: 'Autostrada A19 Palermo-Catania km 164, Termini Imerese',
+    tip: 'תחנת אוטוגריל בתוך הכביש (לא צריך לרדת לעיר) - קרוב יותר לקצה הפלרמיטני של הנסיעה', closedDays: [],
+  },
 ];
 
 const FOOD_DISHES = [

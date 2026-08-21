@@ -25,6 +25,12 @@ const PALERMO_EXTRA_POINTS = [
   { dayNum: 9, name: '💀 Catacombe dei Cappuccini', lat: 38.1084, lng: 13.3489, note: 'מערות קבורה של נזירים. ייחודי אבל לא ממליץ אלא אם אתה ממש רוצה לראות גופות' },
 ];
 
+// אופציות עצירה למקדונלדס בדרך מסנטה ונרינה לפלרמו ביום 8 (ראו גם טאב אוכל)
+const MCDONALDS_STOPS = [
+  { dayNum: 8, name: "🍔 McDonald's Enna (McDrive)", lat: 37.5528, lng: 14.2984, note: 'Via Libero Grassi 16F-16M, Enna - בערך באמצע הדרך' },
+  { dayNum: 8, name: "🍔 McDonald's - Autogrill Caracoli Nord", lat: 37.9672, lng: 13.7255, note: 'A19 כיוון פלרמו, ק"מ 164, ליד טרמיני אימרזה - קרוב יותר לפלרמו' },
+];
+
 const MAP_ICONS = {
   hotel: '🏨', food: '🍽️', attraction: '📍', car: '🚗', gas: '⛽', beach: '🏖️', airport: '🛬',
 };
