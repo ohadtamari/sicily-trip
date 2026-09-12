@@ -370,44 +370,40 @@ const FOOD_PLACES = [
   },
 ];
 
-// סופרמרקטים ליד מקומות הלינה - מקור: מסמך מחקר (AI) שהמשתמש סיפק, מבוסס על קואורדינטות גוגל מפות.
+// סופרמרקטים (רשתות) ליד מקומות הלינה - מקור: מסמך מחקר (AI) שהמשתמש סיפק, מבוסס על קואורדינטות גוגל מפות.
 // מרחקים/שעות משוערים - כדאי לוודא בזמן אמת דרך גוגל מפות אם זה קריטי.
 const SUPERMARKETS = [
   {
     base: 'catania',
     options: [
-      { name: 'Molla Alimentari', address: 'Via Vittorio Emanuele II, 132', distance: '~340 מ\' (4-5 דק\' הליכה, אותו רחוב)', hours: '08:00-24:00, כל יום כולל ראשון', recommended: true, lat: 37.5031278, lng: 15.0900582 },
-      { name: 'Alimentari Licciardello', address: 'Via Vittorio Emanuele II, 89', distance: '~470 מ\'', hours: '08:30-14:00, 16:30-21:30 (חול-שבת), סגור ראשון' },
-      { name: 'Essalam Market (חלאל)', address: 'Via Vittorio Emanuele II, 61', distance: '~450 מ\'', hours: '09:00-14:00/20:30 (משתנה לפי יום), פתוח גם ראשון' },
+      { name: 'Lidl', address: 'Corso Sicilia, 64', distance: '~630 מ\' (8-10 דק\' הליכה)', hours: '08:00-21:30, כל יום כולל ראשון', recommended: true, lat: 37.5074086, lng: 15.0904720 },
+      { name: 'Famila Superstore', address: 'Piazza Santa Maria di Gesù, 10', distance: '~1.3 ק"מ', hours: 'פתוח 24 שעות, כל השבוע', lat: 37.5122894, lng: 15.0785613 },
+      { name: 'Lidl', address: 'Corso Indipendenza, 77-79', distance: '~1.9 ק"מ', hours: '08:00-21:30, כל יום', lat: 37.5037939, lng: 15.0568907 },
     ],
-    tip: 'Molla Alimentari - הכי קרוב וגם הכי נדיב בשעות.',
+    tip: 'Lidl (Corso Sicilia) - הכי קרוב מבין הרשתות הגדולות.',
   },
   {
     base: 'taormina',
     options: [
-      { name: "Bottega Manago'", address: 'Via Calapitrulli, 16', distance: '~90 מ\' (הכי קרוב)', hours: '07:30-22:30, סגור בימי שני', recommended: true, lat: 37.8525192, lng: 15.2882831 },
-      { name: 'Mini Market "Da Nina"', address: 'SP10', distance: '~320 מ\'', hours: '09:00-24:00, כל יום כולל ראשון' },
-      { name: 'InCoop', address: 'Via Cappuccini, 3', distance: '~380 מ\'', hours: '07:30-22:30, כל יום' },
+      { name: 'InCoop', address: 'Via Cappuccini, 3', distance: '~380 מ\'', hours: '07:30-22:30, כל יום כולל ראשון', recommended: true, lat: 37.8550951, lng: 15.2883350 },
+      { name: 'Decò Local Taormina', address: 'Viale Apollo Arcageta, 19', distance: '~650 מ\'', hours: '08:00-22:30 (חול-שבת), 09:00-22:30 ראשון', lat: 37.8515503, lng: 15.2812985 },
     ],
-    tip: 'Bottega Manago\' לרוב הימים (הכי קרוב), Mini Market Da Nina כגיבוי בימי שני (כשמנגו סגור) או לשעות מאוחרות.',
+    tip: 'InCoop - הכי קרוב וגם שעות נדיבות מאוד.',
   },
   {
     base: 'santavenerina',
-    note: 'אזור כפרי - אין שום דבר ממש קרוב, צריך רכב.',
+    note: 'אזור כפרי - הרשתות הגדולות במרחק נסיעה קצרה, לא הליכה.',
     options: [
-      { name: 'Tabacchi Alimentari Edicola Russo Salvatore', address: 'Via Vittorio Emanuele, 360', distance: '~1 ק"מ', hours: '06:00-14:00, 16:00-20:30 (חול-שבת), 07:30-13:30 ראשון', recommended: true, lat: 37.6850385, lng: 15.1331842 },
-      { name: 'Sapori della Natura', address: 'Via Martoglio, 14', distance: '~1.1 ק"מ', hours: '08:30-13:30, 16:00-20:30' },
-      { name: 'Supermercato Decò', address: 'Via Mazzini, 61', distance: '~1.6 ק"מ', hours: '08:30-20:30 (חול-שבת), 08:30-13:00 ראשון' },
-      { name: 'CONAD', address: 'Via Umberto, 16/M', distance: '~1.7 ק"מ', hours: '08:30-20:30 (חול-שבת), 08:30-13:30 ראשון' },
+      { name: 'Supermercato Decò', address: 'Via Mazzini, 61', distance: '~1.6 ק"מ', hours: '08:30-20:30 (חול-שבת), 08:30-13:00 ראשון', recommended: true, lat: 37.6873614, lng: 15.1430936 },
+      { name: 'CONAD', address: 'Via Umberto, 16/M', distance: '~1.7 ק"מ', hours: '08:30-20:30 (חול-שבת), 08:30-13:30 ראשון - מעט יותר נדיב בראשון', lat: 37.6885468, lng: 15.1441313 },
     ],
-    tip: 'Tabacchi Alimentari Russo Salvatore - הכי קרוב וגם פותח הכי מוקדם (06:00).',
+    tip: 'Decò לרוב הימים (הכי קרוב במעט), CONAD אם קונים בבוקר ראשון.',
   },
   {
     base: 'palermo',
     options: [
       { name: 'Famila Superstore', address: 'Salita Partanna, 1', distance: '~240 מ\' (3 דק\' הליכה)', hours: '08:00-21:00 (חול-שבת), 08:00-20:30 ראשון', recommended: true, lat: 38.1169708, lng: 13.3681121 },
-      { name: 'Fresko Supermercati', address: 'Via Roma, 294', distance: '~340 מ\'', hours: '08:30-20:30, כל יום כולל ראשון' },
-      { name: 'Quick Sisa Supermercato', address: 'Vicolo I Monteleone, 11', distance: '~540 מ\'', hours: '08:30-20:00 (חול-שבת), 09:00-13:00 ראשון' },
+      { name: 'Fresko Supermercati', address: 'Via Roma, 294', distance: '~340 מ\'', hours: '08:30-20:30, כל יום כולל ראשון', lat: 38.1178334, lng: 13.3629551 },
     ],
     tip: 'Famila Superstore - הכי קרוב, גדול ונדיב בשעות.',
   },
