@@ -90,7 +90,7 @@ const CHECKLIST_ITEMS = [
   {
     id: 'rifugio-sapienza', areaId: 'etna_winery', base: 'etna', dayLabel: 'יום 7',
     nameHe: 'רפוג\'יו סאפיינצה', nameIt: 'Rifugio Sapienza',
-    note: 'אטנה - רכבל + ג\'יפ עם מדריך עד ~2,800-3,000 מ\'', lat: 37.7005125, lng: 14.9985029, placeId: 'ChIJCaEVdsWqFhMR88TGiRLi-bs',
+    note: 'אטנה - סיור הליכה מודרך מוזמן, 9:00, מפגש ב"בר מונטה גבל" (ליד Rifugio Sapienza). כ-5 שעות, כולל מדריך/ציוד/קסדה/ביטוח. צריך מזומן ביורו במקום לכרטיס רכבל+ג\'יפ 4X4 (לא כלול - 82€/51€ לפסגה 3,400 מ\', או 54€/31€ ל-3,000 מ\'). לבוא עם נעליים נוחות/נעלי ספורט וביגוד חם לגובה. <a href="https://www.getyourguide.com/he-il/booking/EXNZACALTVCKHFTF9SYNMVQHDDVOC7BB" target="_blank" rel="noopener">פרטי ההזמנה ↗</a>', lat: 37.7005125, lng: 14.9985029, placeId: 'ChIJCaEVdsWqFhMR88TGiRLi-bs',
   },
 
   // פלרמו (24-27/9)

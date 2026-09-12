@@ -1,7 +1,7 @@
 // בקר ראשי: ניתוב טאבים, פס הקשר-יום, ורינדור תוכן העמודים
 
 const ENGLISH_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'checklist', 'food', 'transport', 'weather'];
+const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'checklist', 'food', 'transport', 'weather', 'lodging'];
 
 function sanitizeKey(s) { return s.replace(/[^\p{L}\p{N}]+/gu, '_'); }
 
@@ -22,6 +22,7 @@ function showPage(pageId) {
   if (pageId === 'transport') renderTransport();
   if (pageId === 'packing') renderPacking();
   if (pageId === 'weather') initWeather();
+  if (pageId === 'lodging') renderLodging();
 }
 
 function setupTabs() {
@@ -94,6 +95,7 @@ function onDayContextUpdated() {
   if (AppState.currentPage === 'food') { renderFoodPlaces(); renderSupermarkets(); }
   if (AppState.currentPage === 'transport') renderTransport();
   if (AppState.currentPage === 'weather') initWeather();
+  if (AppState.currentPage === 'lodging') renderLodging();
 }
 
 /* ===== מסלול ===== */
@@ -397,6 +399,42 @@ function renderTransport() {
   if (day && !showPickup && !showReturn && !showReminders && !relevantGas.length && !relevantDrives.length) {
     html += `<div class="card">אין תוכן תחבורה ליום הזה (אין רכב) - ראו "הכל" למעלה לתמונה המלאה.</div>`;
   }
+  el.innerHTML = html;
+}
+
+/* ===== לינה ===== */
+function renderLodgingCard(stay, day) {
+  const checkInBadge = day && day.num === stay.checkIn.dayNum
+    ? `<span class="lodging-badge lodging-badge-checkin">🔑 צ'ק אין היום · ${stay.checkIn.time}</span>` : '';
+  const checkOutBadge = day && day.num === stay.checkOut.dayNum
+    ? `<span class="lodging-badge lodging-badge-checkout">🧳 צ'ק אאוט היום · ${stay.checkOut.time}</span>` : '';
+  return `
+    <div class="card lodging-card">
+      <div class="place-name-row">
+        <div class="place-name">${stay.emoji} ${stay.name}</div>
+        <span class="source-chip">📅 ${stay.reservedBy} · ${stay.bookedVia}</span>
+      </div>
+      <a class="place-address-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(stay.name, stay.address)}">📍 ${stay.address} <span class="ext-icon">↗</span></a>
+      <div class="lodging-dates">
+        <div>🔑 צ'ק אין: יום ${stay.checkIn.dayNum} · ${formatDDMM(stay.checkIn.date)} · ${stay.checkIn.time}</div>
+        <div>🧳 צ'ק אאוט: יום ${stay.checkOut.dayNum} · ${formatDDMM(stay.checkOut.date)} · ${stay.checkOut.time}</div>
+        ${stay.hostName ? `<div>🙋 מארח: ${stay.hostName}</div>` : ''}
+      </div>
+      ${checkInBadge}${checkOutBadge}
+      ${(stay.notes || []).map(n => `<div class="place-tip">💡 ${n}</div>`).join('')}
+    </div>`;
+}
+
+function renderLodging() {
+  const el = document.getElementById('lodgingList');
+  const day = AppState.allSelected ? null : getDayByNum(AppState.selectedDayNum);
+  const stays = day ? LODGING_STAYS.filter(s => lodgingRelevantForDay(s, day.num)) : LODGING_STAYS;
+
+  let html = '';
+  if (day && stays.length === 0) {
+    html += `<div class="card">אין מקום לינה רלוונטי ליום הזה - ראו "הכל" למעלה.</div>`;
+  }
+  stays.forEach(stay => { html += renderLodgingCard(stay, day); });
   el.innerHTML = html;
 }
 

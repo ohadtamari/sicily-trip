@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="סיציליה">
 <meta name="theme-color" content="#009246">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="css/style.css?v=17">
+<link rel="stylesheet" href="css/style.css?v=18">
 </head>
 <body>
 <div class="app-shell">
@@ -31,6 +31,7 @@
       <button class="tab-btn" data-page="map"><span class="tab-icon">🗺️</span>מפה</button>
       <button class="tab-btn" data-page="checklist"><span class="tab-icon">✅</span>מה לעשות</button>
       <button class="tab-btn" data-page="food"><span class="tab-icon">🍽️</span>אוכל</button>
+      <button class="tab-btn" data-page="lodging"><span class="tab-icon">🛏️</span>לינה</button>
       <button class="tab-btn" data-page="weather"><span class="tab-icon">☀️</span>מזג אוויר</button>
       <button class="tab-btn" data-page="transport"><span class="tab-icon">🚗</span>תחבורה</button>
       <button class="tab-btn" data-page="packing"><span class="tab-icon">🎒</span>ציוד</button>
@@ -84,6 +85,10 @@
         <div class="food-disclaimer">ℹ️ שעות הפעילות משוערות ולא מאומתות רשמית מול כל מסעדה - מומלץ לבדוק ב-Google Maps / להתקשר לפני ההגעה, בייחוד בסופ"ש ובחגים.</div>
       </section>
 
+      <section id="page-lodging" class="page">
+        <div id="lodgingList"></div>
+      </section>
+
       <section id="page-weather" class="page">
         <div id="weatherDayView">
           <div class="card" id="weatherCurrentCard">טוען מזג אוויר…</div>
@@ -117,12 +122,13 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js"></script>
 
-<script src="js/data-trip.js?v=18" defer></script>
+<script src="js/data-trip.js?v=20" defer></script>
 <script src="js/data-food.js?v=27" defer></script>
 <script src="js/data-map.js?v=13" defer></script>
-<script src="js/data-checklist.js?v=10" defer></script>
-<script src="js/data-packing.js?v=12" defer></script>
+<script src="js/data-checklist.js?v=12" defer></script>
+<script src="js/data-packing.js?v=13" defer></script>
 <script src="js/data-transport.js?v=10" defer></script>
+<script src="js/data-lodging.js?v=1" defer></script>
 
 <script src="js/dayContext.js?v=10" defer></script>
 <script src="js/theme.js?v=11" defer></script>
@@ -130,7 +136,7 @@
 <script src="js/sync.js?v=10" defer></script>
 <script src="js/map.js?v=12" defer></script>
 <script src="js/weather.js?v=11" defer></script>
-<script src="js/app.js?v=19" defer></script>
+<script src="js/app.js?v=20" defer></script>
 
 </body>
 </html>
