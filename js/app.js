@@ -1,7 +1,7 @@
 // בקר ראשי: ניתוב טאבים, פס הקשר-יום, ורינדור תוכן העמודים
 
 const ENGLISH_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'checklist', 'food', 'transport'];
+const PAGES_WITH_DAY_BAR = ['map', 'itinerary', 'checklist', 'food', 'transport', 'weather'];
 
 function sanitizeKey(s) { return s.replace(/[^\p{L}\p{N}]+/gu, '_'); }
 
@@ -93,6 +93,7 @@ function onDayContextUpdated() {
   if (AppState.currentPage === 'checklist') renderChecklist();
   if (AppState.currentPage === 'food') renderFoodPlaces();
   if (AppState.currentPage === 'transport') renderTransport();
+  if (AppState.currentPage === 'weather') initWeather();
 }
 
 /* ===== מסלול ===== */

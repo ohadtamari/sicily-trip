@@ -7,6 +7,7 @@
 const FOOD_SOURCES = {
   claude: { label: 'קלוד', icon: '✦' },
   michelin: { label: 'מדריך מישלן', icon: '⭐' },
+  bib_gourmand: { label: 'מדריך מישלן - Bib Gourmand', icon: '😋' },
   friend: { label: 'המלצה מחבר', icon: '👥' },
   other: { label: 'מקור אחר', icon: '📌' },
 };
@@ -27,6 +28,36 @@ const FOOD_PLACES = [
     id: 'scirocco', name: 'Scirocco Sicilian Fish Lab', base: 'catania', source: 'claude',
     area: 'ליד שוק הדגים', address: 'Piazza Alonzo di Benedetto 7, Catania',
     tip: 'קלמארי מטוגן, כריכי דגים, פירות ים על האש', closedDays: [],
+  },
+  {
+    id: 'me-cumpari-turiddu', name: 'Me Cumpari Turiddu', base: 'catania', source: 'bib_gourmand',
+    area: 'קטניה', address: 'Piazza Turi Ferro 36, 95124 Catania',
+    tip: 'מסעדה בעיצוב וינטג\' (לשעבר מוסך/מחסן) - מטבח סיציליאני יצירתי מבוסס חומרי גלם מקומיים', closedDays: [],
+  },
+  // המלצות שי (מ-Wanderlog של הטיול, נבדקו 12/9/2026)
+  {
+    id: 'agatha-cafe-stesicoro', name: 'Agatha Cafè Cosy Bakery & Specialty Coffee', base: 'catania', source: 'friend', friendName: 'שי',
+    area: 'קטניה, פיאצה סטסיקורו', address: "P.zza Stesicoro 13, 95124 Catania CT",
+    tip: 'בית קפה קזואלי, פתוח 07:00-22:00 מדי יום - בורגרים, נקניקים, פלטת בשרים קרים, לצד אופציות צמחוניות. Walk-in מקובל, אין הזמנה מקוונת (רק טלפון: +39 351 389 7189). דירוג 3.5/5 (Tripadvisor)',
+    closedDays: [],
+  },
+  {
+    id: 'agatha-cafe-vittorio-veneto', name: 'Agatha Cafè Cosy Bakery (Viale Vittorio Veneto)', base: 'catania', source: 'friend', friendName: 'שי',
+    area: 'קטניה', address: 'Viale Vittorio Veneto 181, 95125 Catania CT',
+    tip: 'סניף חדש יחסית של אותה רשת - בראנץ\' ופלטות קטנות עם בשר, בדומה לסניף הראשי. Walk-in מקובל, אין הזמנה מקוונת. דירוג 7.7/10 "Very good" (Wheree)',
+    closedDays: [],
+  },
+  {
+    id: 'forma-catania', name: 'Forma', base: 'catania', source: 'friend', friendName: 'שי',
+    area: 'קטניה', address: 'Via Pietro Garofalo 1, 95124 Catania CT',
+    tip: 'פיצרייה/קפה קזואלי, פתוח 08:00-24:00 מדי יום - קרפצ\'ו בשר/עוף ובורגרים, לצד פיצה ומאפים. Walk-in מקובל, לא נמצאה הזמנה מקוונת ישירה. דירוג 3.9/5 (Tripadvisor)',
+    closedDays: [],
+  },
+  {
+    id: 'trattoria-del-cavaliere', name: 'Trattoria del Cavaliere', base: 'catania', source: 'friend', friendName: 'שי',
+    area: 'קטניה', address: 'Via Paternò 11, 95131 Catania CT',
+    tip: 'המלצת שי (בשם טלי - "מסעדה שטלי המליצה, טובה וזולה"). פתוח 11:00-00:00 מדי יום, תפריט בשר נפרד (Secondi di Carne, Involtini) לצד דגים. מומלץ להזמין מראש בערב - טלפון בלבד (095 310491), אין הזמנה מקוונת. מהפופולריות בעיר: כ-3,600 ביקורות, 3.8/5 (Tripadvisor)',
+    closedDays: [],
   },
   {
     id: 'ranieri', name: 'Ristorante Ranieri', base: 'ortigia', source: 'claude',
@@ -63,14 +94,29 @@ const FOOD_PLACES = [
     area: 'טאורמינה, סמטה מקורסו אומברטו', address: 'טאורמינה',
     tip: 'פסטת פירות ים ויינות מקומיים', closedDays: [],
   },
+  // המלצות שי (מ-Wanderlog של הטיול, נבדקו 12/9/2026)
+  {
+    id: 'otto-geleng', name: 'Otto Geleng Restaurant', base: 'taormina', source: 'friend', friendName: 'שי',
+    area: "טאורמינה, מסעדת השף של מלון Belmond", address: 'Via Teatro Greco 59, 98039 Taormina ME',
+    tip: 'כוכב מישלן 2026 - רק 16 מקומות ישיבה, הזמנה חובה מראש (SevenRooms באתר Belmond) כולל אימות כרטיס אשראי, אין Walk-in. חזיר נברודי שחור לצד דגים. דירוג 4.7/5 (Tripadvisor)',
+    closedDays: [],
+  },
+  // הערה: ב-Wanderlog של הטיול מופיעה הזמנה קיימת ל-Otto Geleng ב-22.9 בשעה 18:00 שאינה שלכם - לוודא לפני הסתמכות
+  {
+    id: 'incanto-taormina', name: 'Incanto', base: 'taormina', source: 'friend', friendName: 'שי',
+    area: 'טאורמינה, טרסת מלון הבוטיק Villa Ducale', address: 'Via Leonardo Da Vinci 60, 98039 Taormina ME',
+    tip: 'נוף לשקיעה על המפרץ ואטנה - בעיקר דגים/ים תיכוני, יש גם קרוקטים של כבש. הזמנה מקוונת דרך TheFork, מומלץ מאוד להזמין מראש. #16 מתוך 239 מסעדות בטאורמינה, 4.7/5, Travelers\' Choice 2025 (538 ביקורות)',
+    closedDays: [],
+  },
+  // הערה: ב-Wanderlog של הטיול מופיעה הזמנה קיימת ל-Incanto ב-23.9 בשעה 19:00 שאינה שלכם - לוודא לפני הסתמכות
   {
     id: 'gagini', name: 'Gagini Social Restaurant', base: 'palermo', source: 'claude',
     area: 'בין פיאצה מרינה לווצ\'יריה', address: 'Via Cassari, Palermo',
     tip: 'מטבח סיציליאני מעודכן, אווירה חברתית', closedDays: [],
   },
   {
-    id: 'buatta', name: 'Buatta Cucina Popolana', base: 'palermo', source: 'claude',
-    area: 'ליד שוק ווצ\'יריה', address: 'Palermo',
+    id: 'buatta', name: 'Buatta Cucina Popolana', base: 'palermo', source: 'bib_gourmand',
+    area: 'ליד שוק ווצ\'יריה', address: 'Via Vittorio Emanuele 176, 90133 Palermo',
     tip: 'טרטוריה בחנות היסטורית מ-1870 - טעמי פלרמו האותנטיים (מומלץ גם ע"י גל)', closedDays: [],
   },
   {
@@ -78,6 +124,14 @@ const FOOD_PLACES = [
     area: 'רובע קלסה', address: 'Kalsa, Palermo',
     tip: 'מוביל ע"י "קרלו הנקניקן" - חומרי גלם מעולים', closedDays: [],
   },
+  // המלצת שי (מ-Wanderlog של הטיול, נבדק 12/9/2026)
+  {
+    id: 'doba-restaurant-terrace', name: 'Doba Restaurant and Terrace', base: 'palermo', source: 'friend', friendName: 'שי',
+    area: 'פלרמו, נוף מעל תיאטרון מסימו', address: "Via Bara All'Olivella 78, 90133 Palermo PA",
+    tip: 'המלצת שי - "מסעדה בפלרמו עם נוף יפה מעל תיאטרון מסימו". פתוחה מ-18:00, הזמנה חובה לערב (dobarestaurant.it/prenota-un-tavolo), אין Walk-in. בעיקר דגים/ים תיכוני, יש גם מנות לא-דגים. דירוג 4.5/5 (130 ביקורות). בבדיקה מ-12.9 נראו 26.9 ו-27.9 סגורים/לא זמינים להזמנה אונליין - כדאי לוודא שוב בסמוך למועד, ייתכן שזה זמני',
+    closedDays: [],
+  },
+  // הערה: ב-Wanderlog של הטיול מופיעה הזמנה קיימת ל-Doba ב-27.9 בשעה 20:30 לארבעה שאינה שלכם, ולפי הבדיקה התאריך הזה בכלל לא זמין להזמנה - לוודא לפני הסתמכות
   {
     id: 'cantine-murgo', name: 'Cantine Murgo (Tenuta San Michele)', base: 'santavenerina', source: 'claude',
     area: 'סנטה ונרינה, יקב על מדרונות האטנה', address: 'Via Zafferana 13, 95010 Santa Venerina',
@@ -254,6 +308,23 @@ const FOOD_PLACES = [
     area: 'פלרמו, ליד פיאצה פוליטאמה', address: 'Via Riccardo Wagner 8/C, 90139 Palermo',
     tip: 'מאפיה (עוגות קטנות כאלה מפונפנות) שממש אהבתי. מעוצבת מחריד', closedDays: [],
   },
+  // רשת Sfrigola - ארנצ'יני מוכנים במקום, טריים לפי הזמנה (סניפים רשמיים מ-sfrigola.it)
+  {
+    id: 'sfrigola-calatafimi', name: 'Sfrigola - Corso Calatafimi', base: 'palermo', source: 'claude',
+    area: 'פלרמו, ליד פיאצה אינדיפנדנצה', address: 'Corso Calatafimi 11, 90129 Palermo',
+    tip: 'רשת ארנצ\'יני סיציליאנית - מכינים ומטגנים לפי הזמנה מול הלקוח', closedDays: [],
+  },
+  {
+    id: 'sfrigola-maqueda', name: 'Sfrigola - Via Maqueda', base: 'palermo', source: 'claude',
+    area: 'פלרמו, ויה מקדה', address: 'Via Maqueda 223, 90133 Palermo',
+    tip: 'סניף נוסף של Sfrigola, קרוב יותר למרכז ולקוואטרו קנטי', closedDays: [],
+  },
+  {
+    id: 'sfrigola-cefalu', name: 'Sfrigola - Cefalù', base: 'cefalu', source: 'claude',
+    area: 'צ\'פאלו, קורסו רוג\'רו', address: 'Corso Ruggero 53, 90015 Cefalù',
+    tip: 'סניף Sfrigola בצ\'פאלו - נוח לעצור בדרך/מהחוף', closedDays: [],
+  },
+
   // אופציות עצירה מהירה ביום הנסיעה לפלרמו (יום 8) - על ציר הכביש A19
   {
     id: 'mcdonalds-enna', name: "McDonald's Enna (McDrive)", base: 'a19route', source: 'other',
@@ -282,6 +353,7 @@ const FOOD_DISHES = [
   { id: 'pane-meusa', name: 'Pane ca\' Meusa', desc: 'כריך טחול פלרמיטני קלאסי - לא לחלשי לב', emoji: '🥖' },
   { id: 'stigghiole', name: 'Stigghiole', desc: 'קרביים על האש - סטריט פוד קטני אותנטי', emoji: '🍢' },
   { id: 'cipollina', name: 'Cipollina', desc: 'מאפה בצק עלים מלוח במילוי רוטב עגבניות, גבינה ונקניק - קלאסיקת מאפייה סיציליאנית (בעיקר בקטניה)', emoji: '🥟' },
+  { id: 'sarti-spritz', name: 'Sarti Spritz', desc: 'ספריץ איטלקי פירותי - פרוסקו, סארטי רוזה (עם תפוז דם סיציליאני, מנגו ופסיפלורה) וסודה', emoji: '🍹' },
 ];
 
 function wikimediaImgUrl(filename) {

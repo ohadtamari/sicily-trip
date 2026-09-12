@@ -48,6 +48,9 @@ function buildMapPoints() {
   MCDONALDS_STOPS.forEach(m => {
     points.push({ dayNum: m.dayNum, time: '', label: m.name + (m.note ? ' - ' + m.note : ''), icon: '🍔', lat: m.lat, lng: m.lng, type: 'food' });
   });
+  SFRIGOLA_POINTS.forEach(s => {
+    points.push({ dayNum: s.dayNum, time: '', label: s.name + (s.note ? ' - ' + s.note : ''), icon: '🍙', lat: s.lat, lng: s.lng, type: 'food' });
+  });
   return points;
 }
 

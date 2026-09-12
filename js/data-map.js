@@ -31,6 +31,13 @@ const MCDONALDS_STOPS = [
   { dayNum: 8, name: "🍔 McDonald's - Autogrill Caracoli Nord", lat: 37.9672, lng: 13.7255, note: 'A19 כיוון פלרמו, ק"מ 164, ליד טרמיני אימרזה - קרוב יותר לפלרמו' },
 ];
 
+// סניפי רשת Sfrigola (ארנצ'יני) בערים שבמסלול - קואורדינטות מ-Google Maps, לפי sfrigola.it/gli-store
+const SFRIGOLA_POINTS = [
+  { dayNum: 9, name: '🍙 Sfrigola - Corso Calatafimi', lat: 38.1120832, lng: 13.3522523, note: 'פלרמו, ליד פיאצה אינדיפנדנצה' },
+  { dayNum: 9, name: '🍙 Sfrigola - Via Maqueda', lat: 38.1162776, lng: 13.3611897, note: 'פלרמו' },
+  { dayNum: 10, name: '🍙 Sfrigola - Cefalù', lat: 38.0378762, lng: 14.0218364, note: 'צ\'פאלו, קורסו רוג\'רו' },
+];
+
 const MAP_ICONS = {
   hotel: '🏨', food: '🍽️', attraction: '📍', car: '🚗', gas: '⛽', beach: '🏖️', airport: '🛬',
 };

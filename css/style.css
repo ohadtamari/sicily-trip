@@ -209,6 +209,8 @@ a { color: var(--accent); }
 :root[data-theme="dark"] .source-chip.source-claude { background: #3a2a22; color: #e29a7c; }
 .source-chip.source-michelin { background: #fce8e8; color: #b91c1c; }
 :root[data-theme="dark"] .source-chip.source-michelin { background: #3a1f1f; color: #ef8080; }
+.source-chip.source-bib_gourmand { background: #fdf0da; color: #9a5b0a; }
+:root[data-theme="dark"] .source-chip.source-bib_gourmand { background: #3a2c15; color: #e8b566; }
 .source-chip.source-friend { background: #e3edfb; color: #1d4ed8; }
 :root[data-theme="dark"] .source-chip.source-friend { background: #1f2a3a; color: #8fb3f5; }
 .place-note-textarea {
@@ -290,6 +292,15 @@ ul.plain li { margin-bottom: 4px; font-size: 0.88rem; }
 /* מזג אוויר */
 .weather-current { display: flex; align-items: center; gap: 16px; }
 .weather-current .temp { font-size: 2.4rem; font-weight: 700; }
+.weather-daily-summary { display: flex; align-items: center; gap: 16px; }
+.weather-daily-summary.with-current { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle, rgba(128,128,128,.2)); }
+.weather-daily-summary .temp { font-size: 1.6rem; font-weight: 700; }
+.weather-sun-row { display: flex; gap: 24px; }
+.weather-sun-item { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+.weather-sun-item span { color: var(--text-muted); }
+.weather-hourly { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-top: 8px; }
+.hour-slot { flex: 0 0 auto; min-width: 56px; background: var(--bg-sunken); border-radius: 10px; padding: 8px 4px; text-align: center; font-size: 0.78rem; }
+.hour-slot .hour-time { font-weight: 700; font-size: 0.72rem; color: var(--text-muted); }
 .weather-forecast { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; margin-top: 12px; }
 .forecast-day { background: var(--bg-sunken); border-radius: 10px; padding: 8px 4px; text-align: center; font-size: 0.78rem; }
 .forecast-day .fd-name { font-weight: 700; }
