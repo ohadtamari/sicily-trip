@@ -156,8 +156,9 @@ const FOOD_PLACES = [
     tip: 'יקב אגריטוריזמו עם יינות מבעבעים (מבוססי נרלו) - טעימות וארוחות במקום הלינה',
     closedDays: [],
     bookings: [
-      { dayNum: 6, date: '2026-09-22', meal: 'ערב', time: 'סביב 19:00', status: 'confirmed', label: 'Sparkling Wine Experience', method: 'הודעת ווטסאפ לבית ההארחה (אין הזמנה מקוונת)', note: 'מגיעה עם קרש נקניקים/גבינות בלבד (לא ארוחה מלאה) - כדאי לוודא שיש מספיק בשר' },
-      { dayNum: 7, date: '2026-09-23', meal: 'ערב', time: 'סביב 19:00', status: 'confirmed', label: 'Food and Wine Experience (5 יינות)', method: 'הודעת ווטסאפ לבית ההארחה (אין הזמנה מקוונת)' },
+      { dayNum: 6, date: '2026-09-22', meal: 'ערב', time: '19:00', status: 'confirmed', label: 'Wine Cellar Tour', method: 'הודעת ווטסאפ לבית ההארחה (אין הזמנה מקוונת)' },
+      { dayNum: 6, date: '2026-09-22', meal: 'ערב', time: '19:30', status: 'confirmed', label: 'Sparkling Wine Experience (ל-2 אנשים)', method: 'הודעת ווטסאפ לבית ההארחה (אין הזמנה מקוונת)', note: 'מגיעה עם קרש נקניקים/גבינות בלבד (לא ארוחה מלאה) - כדאי לוודא שיש מספיק בשר' },
+      { dayNum: 7, date: '2026-09-23', meal: 'ערב', time: '19:30', status: 'confirmed', label: 'Food and Wine Experience (5 יינות, ל-2 אנשים)', method: 'הודעת ווטסאפ לבית ההארחה (אין הזמנה מקוונת)' },
     ],
   },
   // המלצות מאידן (חבר) - נאספו מקישורי Google Maps ששלח בוואטסאפ
