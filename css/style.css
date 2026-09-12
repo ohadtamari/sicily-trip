@@ -4,6 +4,8 @@
   --color-green-light: #35b06a;
   --color-red: #CD212A;
   --color-red-light: #e2565d;
+  --color-amber: #b45309;
+  --color-amber-light: #f0b355;
 
   --bg: #faf9f6;
   --bg-elevated: #ffffff;
@@ -14,6 +16,8 @@
   --accent: var(--color-green);
   --accent-contrast: #ffffff;
   --danger: var(--color-red);
+  --booking-confirmed: var(--color-green);
+  --booking-pending: var(--color-amber);
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
@@ -27,6 +31,8 @@
   --accent: var(--color-green-light);
   --accent-contrast: #0b1a10;
   --danger: var(--color-red-light);
+  --booking-confirmed: var(--color-green-light);
+  --booking-pending: var(--color-amber-light);
   --shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
 }
 
@@ -41,6 +47,8 @@
     --accent: var(--color-green-light);
     --accent-contrast: #0b1a10;
     --danger: var(--color-red-light);
+    --booking-confirmed: var(--color-green-light);
+    --booking-pending: var(--color-amber-light);
     --shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
   }
 }
@@ -156,6 +164,23 @@ a { color: var(--accent); }
 .itin-title { font-weight: 600; }
 .itin-desc { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
 .itin-note { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 8px; }
+.itin-item-has-booking.itin-item { border-inline-start: 4px solid var(--booking-confirmed); }
+.itin-item-has-booking:has(.itin-booking-pending).itin-item { border-inline-start-color: var(--booking-pending); }
+.itin-item-has-booking:has(.itin-booking-need_booking).itin-item { border-inline-start-color: var(--danger); }
+.itin-booking-chip {
+  display: inline-block; margin-top: 4px; font-size: 0.72rem; font-weight: 700;
+  border-radius: 10px; padding: 2px 8px;
+  background: color-mix(in srgb, var(--booking-confirmed) 15%, var(--bg-elevated));
+  color: var(--booking-confirmed);
+}
+.itin-booking-chip.itin-booking-pending {
+  background: color-mix(in srgb, var(--booking-pending) 15%, var(--bg-elevated));
+  color: var(--booking-pending);
+}
+.itin-booking-chip.itin-booking-need_booking {
+  background: color-mix(in srgb, var(--danger) 15%, var(--bg-elevated));
+  color: var(--danger);
+}
 
 /* מה לעשות */
 .checklist-item { display: flex; gap: 12px; align-items: flex-start; }
@@ -180,8 +205,43 @@ a { color: var(--accent); }
 .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 @media (max-width: 720px) { .food-grid { grid-template-columns: 1fr; } }
 .food-col h2 { font-size: 1rem; margin: 0 0 10px; }
+.food-subheading { margin-top: 18px; }
+.supermarket-base { font-weight: 700; margin-bottom: 4px; }
+.supermarket-option { padding: 8px 0; border-top: 1px solid var(--border); }
+.supermarket-option:first-of-type { border-top: none; padding-top: 2px; }
+.supermarket-option.is-recommended .supermarket-option-name { color: var(--accent); }
+.supermarket-option-name { font-weight: 600; font-size: 0.88rem; }
+.supermarket-option-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.supermarket-tip { border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 8px; }
 .place-card { position: relative; }
 .place-card.closed { border-color: var(--danger); }
+.place-card.has-booking-confirmed { border: 2px solid var(--booking-confirmed); background: color-mix(in srgb, var(--booking-confirmed) 7%, var(--bg-elevated)); }
+.place-card.has-booking-pending { border: 2px solid var(--booking-pending); background: color-mix(in srgb, var(--booking-pending) 7%, var(--bg-elevated)); }
+.place-card.has-booking-need_booking { border: 2px solid var(--danger); background: color-mix(in srgb, var(--danger) 7%, var(--bg-elevated)); }
+.booking-chip {
+  margin-top: 8px; padding: 8px 10px; border-radius: 8px; font-size: 0.8rem;
+  background: color-mix(in srgb, var(--booking-confirmed) 12%, var(--bg-elevated));
+  border: 1px solid var(--booking-confirmed);
+}
+.booking-chip.booking-pending {
+  background: color-mix(in srgb, var(--booking-pending) 12%, var(--bg-elevated));
+  border-color: var(--booking-pending);
+}
+.booking-chip.booking-need_booking {
+  background: color-mix(in srgb, var(--danger) 12%, var(--bg-elevated));
+  border-color: var(--danger);
+}
+.booking-chip-head { font-weight: 700; }
+.booking-chip.booking-confirmed .booking-chip-head { color: var(--booking-confirmed); }
+.booking-chip.booking-pending .booking-chip-head { color: var(--booking-pending); }
+.booking-chip.booking-need_booking .booking-chip-head { color: var(--danger); }
+.booking-chip-details { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.booking-chip-method, .booking-chip-note { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+.food-day-tip {
+  font-weight: 600; font-size: 0.88rem; border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-elevated));
+}
+.food-day-tip-line + .food-day-tip-line { margin-top: 4px; }
 .place-name-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .place-name { font-weight: 700; }
 .place-closed-flag {
@@ -213,6 +273,8 @@ a { color: var(--accent); }
 :root[data-theme="dark"] .source-chip.source-bib_gourmand { background: #3a2c15; color: #e8b566; }
 .source-chip.source-friend { background: #e3edfb; color: #1d4ed8; }
 :root[data-theme="dark"] .source-chip.source-friend { background: #1f2a3a; color: #8fb3f5; }
+.source-chip.source-instagram { background: #fbe3f0; color: #c02b7a; }
+:root[data-theme="dark"] .source-chip.source-instagram { background: #3a1f30; color: #ef8fc0; }
 .place-note-textarea {
   width: 100%; margin-top: 10px; resize: vertical; min-height: 44px;
   font-family: inherit; font-size: 0.82rem; padding: 8px; border-radius: 8px;

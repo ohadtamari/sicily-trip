@@ -38,6 +38,18 @@ const SFRIGOLA_POINTS = [
   { dayNum: 10, name: '🍙 Sfrigola - Cefalù', lat: 38.0378762, lng: 14.0218364, note: 'צ\'פאלו, קורסו רוג\'רו' },
 ];
 
+// נקודות סופרמרקטים מומלצים (SUPERMARKETS ב-data-food.js) - dayNum = יום הצ'ק-אין לאותו מקום לינה (ראו HOTELS_PLACEHOLDER)
+const SUPERMARKET_DAY_BY_BASE = { catania: 1, taormina: 4, santavenerina: 6, palermo: 8 };
+const SUPERMARKET_POINTS = SUPERMARKETS
+  .map(group => {
+    const rec = group.options.find(o => o.recommended);
+    if (!rec || !rec.lat || !rec.lng) return null;
+    const dayNum = SUPERMARKET_DAY_BY_BASE[group.base];
+    if (!dayNum) return null;
+    return { dayNum, name: '🛒 ' + rec.name, lat: rec.lat, lng: rec.lng, note: rec.address };
+  })
+  .filter(Boolean);
+
 const MAP_ICONS = {
   hotel: '🏨', food: '🍽️', attraction: '📍', car: '🚗', gas: '⛽', beach: '🏖️', airport: '🛬',
 };

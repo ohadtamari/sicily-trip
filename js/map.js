@@ -51,6 +51,9 @@ function buildMapPoints() {
   SFRIGOLA_POINTS.forEach(s => {
     points.push({ dayNum: s.dayNum, time: '', label: s.name + (s.note ? ' - ' + s.note : ''), icon: '🍙', lat: s.lat, lng: s.lng, type: 'food' });
   });
+  SUPERMARKET_POINTS.forEach(s => {
+    points.push({ dayNum: s.dayNum, time: '', label: s.name + (s.note ? ' - ' + s.note : ''), icon: '🛒', lat: s.lat, lng: s.lng, type: 'food' });
+  });
   return points;
 }
 

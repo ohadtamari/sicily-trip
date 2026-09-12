@@ -18,7 +18,7 @@ function showPage(pageId) {
   else if (typeof stopLocating === 'function') { stopLocating(); }
   if (pageId === 'itinerary') renderItinerary();
   if (pageId === 'checklist') renderChecklist();
-  if (pageId === 'food') { renderFoodPlaces(); renderFoodDishes(); }
+  if (pageId === 'food') { renderFoodPlaces(); renderFoodDishes(); renderSupermarkets(); }
   if (pageId === 'transport') renderTransport();
   if (pageId === 'packing') renderPacking();
   if (pageId === 'weather') initWeather();
@@ -91,7 +91,7 @@ function onDayContextUpdated() {
   notifyDayContextChange();
   if (AppState.currentPage === 'itinerary') renderItinerary();
   if (AppState.currentPage === 'checklist') renderChecklist();
-  if (AppState.currentPage === 'food') renderFoodPlaces();
+  if (AppState.currentPage === 'food') { renderFoodPlaces(); renderSupermarkets(); }
   if (AppState.currentPage === 'transport') renderTransport();
   if (AppState.currentPage === 'weather') initWeather();
 }
@@ -99,12 +99,17 @@ function onDayContextUpdated() {
 /* ===== מסלול ===== */
 function renderItinItem(item, day) {
   const badge = item.dayOffset ? `<span class="itin-badge">+${item.dayOffset}</span>` : '';
+  const booking = item.booking;
+  const bookingChip = booking
+    ? `<span class="itin-booking-chip itin-booking-${booking.status}">${(BOOKING_STATUS_META[booking.status] || BOOKING_STATUS_META.pending).icon} ${booking.name}${booking.time ? ' · ' + booking.time : ''}</span>`
+    : '';
   return `
-    <div class="card itin-item">
+    <div class="card itin-item ${booking ? 'itin-item-has-booking' : ''}">
       <div class="itin-icon">${item.icon || '📍'}</div>
       <div style="flex:1">
         <div><span class="itin-time">${item.time}${badge}</span> <span class="itin-title">${item.title}</span></div>
         ${item.desc ? `<div class="itin-desc">${item.desc}</div>` : ''}
+        ${bookingChip}
       </div>
     </div>`;
 }
@@ -189,6 +194,23 @@ function flushSaveNote(placeId, text) {
 const PENCIL_ICON = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
 const _notesEditingIds = new Set();
 
+const BOOKING_STATUS_META = {
+  confirmed: { label: 'הזמנה מאושרת', icon: '✅' },
+  pending: { label: 'הזמנה בהמתנה', icon: '⏳' },
+  need_booking: { label: 'צריך להזמין', icon: '❗' },
+};
+
+function renderBookingBlock(booking) {
+  const meta = BOOKING_STATUS_META[booking.status] || BOOKING_STATUS_META.pending;
+  return `
+    <div class="booking-chip booking-${booking.status}">
+      <div class="booking-chip-head">${meta.icon} ${meta.label}${booking.label ? ' · ' + booking.label : ''}</div>
+      <div class="booking-chip-details">יום ${booking.dayNum} · ${booking.date.split('-').reverse().slice(0,2).join('.')} · ${booking.meal} ${booking.time}</div>
+      ${booking.method ? `<div class="booking-chip-method">${booking.method}</div>` : ''}
+      ${booking.note ? `<div class="booking-chip-note">${booking.note}</div>` : ''}
+    </div>`;
+}
+
 function renderFoodPlaces() {
   const el = document.getElementById('placesList');
   const day = AppState.allSelected ? null : getDayByNum(AppState.selectedDayNum);
@@ -198,6 +220,10 @@ function renderFoodPlaces() {
   const places = relevantBases ? FOOD_PLACES.filter(p => relevantBases.has(p.base)) : FOOD_PLACES;
 
   let html = '';
+  if (day && day.foodNote) {
+    const tipLines = [day.foodNote.lunch, day.foodNote.dinner].filter(Boolean);
+    html += `<div class="card food-day-tip">${tipLines.map(line => `<div class="food-day-tip-line">💡 ${line}</div>`).join('')}</div>`;
+  }
   if (day) {
     html += `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">מסעדות רלוונטיות ליום ${day.num} (${Array.from(relevantBases).map(b => BASES[b] ? BASES[b].label : b).join(' / ')}) - לחצו "הכל" למעלה כדי לראות את כל הרשימה.</div>`;
   }
@@ -208,15 +234,21 @@ function renderFoodPlaces() {
     const isClosed = weekdayEn && place.closedDays.includes(weekdayEn);
     const src = FOOD_SOURCES[place.source] || FOOD_SOURCES.other;
     const note = (SyncService.state.placeNotes && SyncService.state.placeNotes[place.id]) || '';
+    const bookings = place.bookings || [];
+    const hasNeedBooking = bookings.some(b => b.status === 'need_booking');
+    const hasPending = bookings.some(b => b.status === 'pending');
+    const hasConfirmed = bookings.some(b => b.status === 'confirmed');
+    const bookingClass = hasNeedBooking ? 'has-booking-need_booking' : hasPending ? 'has-booking-pending' : hasConfirmed ? 'has-booking-confirmed' : '';
     html += `
-      <div class="card place-card ${isClosed ? 'closed' : ''}">
+      <div class="card place-card ${isClosed ? 'closed' : ''} ${bookingClass}">
         <div class="place-name-row">
-          <div class="place-name">${place.name}</div>
+          <div class="place-name">${place.emoji ? place.emoji + ' ' : ''}${place.name}</div>
           <span class="source-chip source-${place.source}">${src.icon} ${src.label}${place.friendName ? ' - ' + place.friendName : ''}</span>
         </div>
         <div class="place-area">${place.area}</div>
         <a class="place-address-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(place.name, place.area)}">📍 ${place.address} <span class="ext-icon">↗</span></a>
         ${place.tip ? `<div class="place-tip">${place.tip}</div>` : ''}
+        ${bookings.map(renderBookingBlock).join('')}
         ${isClosed ? `<div class="place-closed-flag">סגור ב${day.weekday} (${day.date.split('-').reverse().slice(0,2).join('.')})</div>` : ''}
         ${renderPlaceNoteBlock(place.id, note)}
       </div>`;
@@ -256,13 +288,43 @@ function renderPlaceNoteBlock(placeId, note) {
   return `<button type="button" class="place-note-add-btn place-note-edit-btn" data-place="${placeId}">${PENCIL_ICON} הוסיפו הערה משותפת</button>`;
 }
 
+function renderSupermarkets() {
+  const el = document.getElementById('supermarketsList');
+  if (!el) return;
+  const day = AppState.allSelected ? null : getDayByNum(AppState.selectedDayNum);
+  const relevantBases = day ? getRelevantBasesForDay(day) : null;
+  const groups = relevantBases ? SUPERMARKETS.filter(g => relevantBases.has(g.base)) : SUPERMARKETS;
+
+  let html = '';
+  if (groups.length === 0) {
+    html += `<div class="card">אין סופרמרקט רלוונטי ליום הזה - ראו "הכל" למעלה.</div>`;
+  }
+  groups.forEach(group => {
+    const baseLabel = BASES[group.base] ? BASES[group.base].label : group.base;
+    html += `
+      <div class="card supermarket-card">
+        <div class="supermarket-base">${baseLabel}</div>
+        ${group.note ? `<div class="place-tip">${group.note}</div>` : ''}
+        ${group.options.map(opt => `
+          <div class="supermarket-option ${opt.recommended ? 'is-recommended' : ''}">
+            <div class="supermarket-option-name">${opt.recommended ? '⭐ ' : ''}${opt.name}</div>
+            <a class="place-address-link" target="_blank" rel="noopener" href="${googleMapsSearchUrl(opt.name, baseLabel)}">📍 ${opt.address} <span class="ext-icon">↗</span></a>
+            <div class="supermarket-option-meta">${opt.distance} · ${opt.hours}</div>
+          </div>`).join('')}
+        ${group.tip ? `<div class="place-tip supermarket-tip">💡 ${group.tip}</div>` : ''}
+      </div>`;
+  });
+  el.innerHTML = html;
+}
+
 function renderFoodDishes() {
   const el = document.getElementById('dishesList');
   let html = '';
   FOOD_DISHES.forEach(dish => {
     const checked = !!(SyncService.state.foodDishes && SyncService.state.foodDishes[dish.id]);
-    const imgHtml = dish.img
-      ? `<img class="dish-img" src="${wikimediaImgUrl(dish.img)}" alt="${dish.name}" onerror="this.outerHTML='<div class=&quot;dish-emoji&quot;>${dish.emoji}</div>'">`
+    const imgSrc = dish.img ? (dish.img.startsWith('http') ? dish.img : wikimediaImgUrl(dish.img)) : '';
+    const imgHtml = imgSrc
+      ? `<img class="dish-img" src="${imgSrc}" alt="${dish.name}" onerror="this.outerHTML='<div class=&quot;dish-emoji&quot;>${dish.emoji}</div>'">`
       : `<div class="dish-emoji">${dish.emoji}</div>`;
     html += `
       <div class="card dish-card">
