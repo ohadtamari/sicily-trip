@@ -138,9 +138,9 @@ const TRIP_DAYS = [
       { time: '12:30', title: 'קפלה פלטינה (Cappella Palatina)', desc: 'פסיפסים ביזנטיים-נורמניים מדהימים. שעות: 08:30-16:30/17:00 ברצף בימי שישי (הסגירה באמצע היום היא רק בימי ראשון, לא רלוונטי). כניסה אחרונה כ-15:45-16:00. כרטיס משולב (קפלה+דירות מלכותיות+גנים) כ-19€, בג׳-ד׳-ה׳ (כשהדירות סגורות) כ-15.50€. מומלץ להזמין מראש (אתר מבוקר מאוד). לבוש צנוע - כתפיים וברכיים מכוסות. כניסה בפועל דרך פיאצה אינדיפנדנצה (לא פיאצה פרלמנטו)', icon: '🕌', base: 'palermo', lat: 38.1113, lng: 13.3532 },
       { time: '14:00', title: 'ארוחת צהריים ב-Le Angeliche', desc: 'בתוך שוק Mercato del Capo', icon: '🍽️', base: 'palermo', booking: { name: 'Le Angeliche', status: 'confirmed', time: '14:00' } },
       { time: '15:30', title: 'מנוחה / המשך הליכה בעיר העתיקה', desc: '', icon: '😌', base: 'palermo' },
-      { time: '20:00', title: 'ארוחת ערב ב-Osteria Alivàru', desc: 'לפני שיוצאים לחיי לילה באזור קלסה / ווצ\'יריה', icon: '🍹', base: 'palermo', booking: { name: 'Osteria Alivàru', status: 'pending', time: '20:00' } },
+      { time: '20:00', title: 'ארוחת ערב ב-Osteria Alivàru', desc: 'לפני שיוצאים לחיי לילה באזור קלסה / ווצ\'יריה', icon: '🍹', base: 'palermo', booking: { name: 'Osteria Alivàru', status: 'confirmed', time: '20:00' } },
     ],
-    foodNote: { lunch: 'צהריים - יש הזמנה (Le Angeliche, 14:00)', dinner: 'ערב - יש הזמנה בהמתנה לתשובת המסעדה (Osteria Alivàru, 20:00)' },
+    foodNote: { lunch: 'צהריים - יש הזמנה (Le Angeliche, 14:00)', dinner: 'ערב - יש הזמנה (Osteria Alivàru, 20:00)' },
   },
   {
     num: 10, date: '2026-09-26', weekday: 'שבת', base: 'palermo',

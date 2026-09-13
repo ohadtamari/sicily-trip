@@ -132,7 +132,7 @@ const FOOD_PLACES = [
     id: 'alivaru', name: 'Osteria Alivàru da Carlo Napoli', base: 'palermo', source: 'claude',
     area: 'רובע קלסה', address: 'Kalsa, Palermo',
     tip: 'מוביל ע"י "קרלו הנקניקן" - חומרי גלם מעולים', closedDays: [],
-    bookings: [{ dayNum: 9, date: '2026-09-25', meal: 'ערב', time: '20:00', status: 'pending', method: 'מייל: osteriaalivaru@gmail.com', note: 'מייל נשלח - ממתינים לתשובת המסעדה' }],
+    bookings: [{ dayNum: 9, date: '2026-09-25', meal: 'ערב', time: '20:00', status: 'confirmed', method: 'מייל: osteriaalivaru@gmail.com' }],
   },
   {
     id: 'le-angeliche', name: 'Le Angeliche', base: 'palermo', source: 'friend', friendName: 'גל',
