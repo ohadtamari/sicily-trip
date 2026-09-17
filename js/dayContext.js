@@ -14,6 +14,28 @@ const AppState = {
 function onDayContextChange(cb) { AppState.listeners.push(cb); }
 function notifyDayContextChange() { AppState.listeners.forEach(cb => cb()); }
 
+// שמירת בחירת היום הנוכחית (כדי שבחירה ידנית תישאר גם אחרי רענון/סגירה,
+// אבל רק עד היום הקלנדרי הבא - שאז חוזרים אוטומטית ל"היום")
+const DAY_SELECTION_KEY = 'sicily-day-selection-v1';
+
+function saveDaySelection() {
+  try {
+    localStorage.setItem(DAY_SELECTION_KEY, JSON.stringify({
+      date: toDateKey(new Date()),
+      dayNum: AppState.selectedDayNum,
+      allSelected: AppState.allSelected,
+    }));
+  } catch (e) { /* localStorage לא זמין - מתעלמים */ }
+}
+
+function loadDaySelectionForToday() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(DAY_SELECTION_KEY));
+    if (parsed && parsed.date === toDateKey(new Date())) return parsed;
+  } catch (e) { /* פגום/לא זמין - מתעלמים */ }
+  return null;
+}
+
 function getCurrentBaseCoords() {
   if (AppState.allSelected) return BASES.catania;
   const day = getDayByNum(AppState.selectedDayNum);

@@ -88,6 +88,7 @@ function setupSwipeNav() {
 }
 
 function onDayContextUpdated() {
+  saveDaySelection();
   renderDayContextBar();
   notifyDayContextChange();
   if (AppState.currentPage === 'itinerary') renderItinerary();
@@ -480,7 +481,15 @@ function renderPacking() {
 
 /* ===== אתחול ===== */
 function init() {
-  AppState.selectedDayNum = computeAutoDayNum();
+  const saved = loadDaySelectionForToday();
+  if (saved) {
+    AppState.selectedDayNum = saved.dayNum;
+    AppState.allSelected = !!saved.allSelected;
+  } else {
+    AppState.selectedDayNum = computeAutoDayNum();
+    AppState.allSelected = false;
+    saveDaySelection();
+  }
   setupTabs();
   setupDayNav();
   setupSwipeNav();

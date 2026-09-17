@@ -45,6 +45,71 @@ async function getWeatherForBase(baseId) {
   return data;
 }
 
+// המלצת לבוש ליום/ערב - מבוססת בעיקר על הטמפרטורה החזויה, ובנוסף על מה שעושים
+// באותו יום (זוהה לפי האייקונים של פריטי המסלול, ולא ידני, כדי להישאר מסונכרן עם המסלול)
+function estimateEveningTemp(hourlyData, dateKey, fallback) {
+  if (hourlyData) {
+    const idx = hourlyData.time.indexOf(dateKey + 'T20:00');
+    if (idx !== -1) return Math.round(hourlyData.temperature_2m[idx]);
+  }
+  return fallback;
+}
+
+function dayActivityTags(day) {
+  const icons = new Set(day.items.map(it => it.icon));
+  return {
+    beach: icons.has('🏖️') || icons.has('🏊'),
+    etnaHike: icons.has('🚡') || day.base === 'etna',
+    religiousSite: icons.has('🕌') || icons.has('⛪'),
+    travel: icons.has('✈️') || icons.has('🛬') || day.items.some(it => /FlixBus/i.test(it.title || '')),
+  };
+}
+
+function wearBaseForTemp(temp) {
+  if (temp === null) return 'בגדי קיץ קלילים, נעליים נוחות';
+  if (temp >= 29) return 'חולצה קצרה ומכנס קצר, נעליים קלות';
+  if (temp >= 24) return 'חולצה קצרה ומכנס קצר, נעלי הליכה נוחות';
+  if (temp >= 19) return 'חולצה קצרה, מכנס ארוך קליל, נעליים נוחות';
+  return 'שכבות - חולצה + סווטשירט קליל, מכנס ארוך, נעליים סגורות';
+}
+
+function wearEveningForTemp(temp) {
+  if (temp === null) return 'שכבה נוספת לערב, סניקרס';
+  if (temp >= 24) return 'חולצה קצרה, מכנס קליל, סניקרס';
+  if (temp >= 19) return 'חולצה קצרה, מכנס ארוך, ג\'קט קל, סניקרס';
+  if (temp >= 15) return 'מכנס ארוך, ג\'קט, סניקרס';
+  return 'שכבות חמות - ג\'קט/סוודר, מכנס ארוך, סניקרס';
+}
+
+function getWearRecommendation(day, dailyData, hourlyData) {
+  const dayIdx = dailyData ? dailyData.time.indexOf(day.date) : -1;
+  const maxT = dayIdx !== -1 ? Math.round(dailyData.temperature_2m_max[dayIdx]) : null;
+  const minT = dayIdx !== -1 ? Math.round(dailyData.temperature_2m_min[dayIdx]) : null;
+  const pop = dayIdx !== -1 ? dailyData.precipitation_probability_max[dayIdx] : null;
+  const eveningT = estimateEveningTemp(hourlyData, day.date, minT);
+  const tags = dayActivityTags(day);
+
+  const dayParts = [wearBaseForTemp(maxT)];
+  const eveningParts = [wearEveningForTemp(eveningT)];
+
+  if (pop !== null && pop >= 40) dayParts.push('☂️ סיכוי לגשם - כדאי ג\'קט גשם קליל/מטרייה');
+  if (tags.beach) dayParts.push('🩱 בגד ים + מגבת');
+  if (tags.religiousSite) dayParts.push('👗 לבוש צנוע לאתר דתי - כתפיים וברכיים מכוסות');
+  if (tags.etnaHike) dayParts.push('🧥 בפסגת האטנה קר ורוחות חזקות - שכבה חמה, מכנס ארוך ונעלי טיולים סגורות (גם אם למטה חם)');
+  if (tags.travel) eveningParts.push('🧣 שכבה קלה לקור מזגן בטיסה/נסיעה ארוכה');
+
+  return { dayText: dayParts.join(' · '), eveningText: eveningParts.join(' · ') };
+}
+
+function renderWear(data, day) {
+  const el = document.getElementById('weatherWearCard');
+  const wear = getWearRecommendation(day, data.daily, data.hourly);
+  el.innerHTML = `
+    <h2 style="margin-top:0;font-size:1rem;">מה ללבוש</h2>
+    <div class="weather-wear-row"><span class="weather-wear-label">☀️ יום</span><span>${wear.dayText}</span></div>
+    <div class="weather-wear-row"><span class="weather-wear-label">🌙 ערב</span><span>${wear.eveningText}</span></div>`;
+}
+
 function formatHour(isoString) {
   return isoString.slice(11, 16);
 }
@@ -145,6 +210,7 @@ async function renderDayWeather(ctx) {
   const data = await getWeatherForBase(ctx.day.base);
   renderCurrentWeather(data, ctx.day, ctx.base);
   renderSunTimes(data, ctx.day);
+  renderWear(data, ctx.day);
   renderHourly(data, ctx.day);
 }
 
